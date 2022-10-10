@@ -1,0 +1,41 @@
+.PlaybackPlan {
+  text-align: center;
+}
+
+.PlaybackPlanLogo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.PlaybackPlanHeader {
+  background-color: #211825;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.PlaybackPlanSelect {
+  background-color: white;
+}
+
+.PlaybackPlanLink {
+  color: #61dafb;
+}
+
+.PlaybackPlanButton {
+  margin-top: 3rem!important;
+  background-color: #B100FF!important;
+}
+
+@keyframes PlaybackPlanLogoSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

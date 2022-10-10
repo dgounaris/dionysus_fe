@@ -2,12 +2,12 @@
   text-align: center;
 }
 
-.SongSelection-logo {
+.SongSelectionLogo {
   height: 40vmin;
   pointer-events: none;
 }
 
-.SongSelection-header {
+.SongSelectionHeader {
   background-color: #211825;
   min-height: 100vh;
   display: flex;
@@ -18,11 +18,20 @@
   color: white;
 }
 
-.SongSelection-link {
+.SongSelectionPlaylistSelect {
+  background-color: white;
+}
+
+.SongSelectionLink {
   color: #61dafb;
 }
 
-@keyframes SongSelection-logo-spin {
+.SongSelectionButton {
+  margin-top: 3rem!important;
+  background-color: #B100FF!important;
+}
+
+@keyframes SongSelectionLogoSpin {
   from {
     transform: rotate(0deg);
   }

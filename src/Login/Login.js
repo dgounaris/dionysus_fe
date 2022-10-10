@@ -1,7 +1,7 @@
 import logo from '../logo.svg';
 import './Login.css';
 
-function Login() {
+const Login = () => {
   return (
     <div className="Login">
       <header className="Login-header">
@@ -11,7 +11,7 @@ function Login() {
         </p>
         <a
           className="Login-link"
-          href="http://localhost:8888/login"
+          href="http://localhost:8888/v1/login"
           target="_blank"
           rel="noopener noreferrer"
         >
