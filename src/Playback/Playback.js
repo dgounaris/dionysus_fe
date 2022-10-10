@@ -32,13 +32,50 @@ const Playback = () => {
     )
     return data
   }
+  const pausePlayback = async () => {
+    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/pause`)
+    return data
+  }
+  const resumePlayback = async () => {
+    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/resume`)
+    return data
+  }
+  const nextPlayback = async () => {
+    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/next`)
+    return data
+  }
+  const stopPlayback = async () => {
+    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/stop`)
+    return data
+  }
 
   useEffect(() => {
-      startPlayback().then(data => {
+      startPlayback().then(_ => {
         setPlaybackStatus('PLAYING')
       })
     }
-  )
+   , [])
+
+  const pause = () => {
+    pausePlayback().then(_ => {
+      setPlaybackStatus('PAUSED')
+    })
+  }
+  const resume = () => {
+    resumePlayback().then(_ => {
+      setPlaybackStatus('PLAYING')
+    })
+  }
+  const next = () => {
+    nextPlayback().then(_ => {
+      setPlaybackStatus('PLAYING')
+    })
+  }
+  const stop = () => {
+    stopPlayback().then(data => {
+      setPlaybackStatus('STOPPED')
+    })
+  }
 
   let navigate = useNavigate()
 
@@ -48,9 +85,10 @@ const Playback = () => {
         <p>
           Current status: {playbackStatus}
         </p>
-        <Button className={styles.PlaybackPlanButton} variant="contained">Pause</Button>
-        <Button className={styles.PlaybackPlanButton} variant="contained">Next</Button>
-        <Button className={styles.PlaybackPlanButton} variant="contained">Stop</Button>
+        <Button className={styles.PlaybackPlanButton} variant="contained" onClick={pause}>Pause</Button>
+        <Button className={styles.PlaybackPlanButton} variant="contained" onClick={resume}>Resume</Button>
+        <Button className={styles.PlaybackPlanButton} variant="contained" onClick={next}>Next</Button>
+        <Button className={styles.PlaybackPlanButton} variant="contained" onClick={stop}>Stop</Button>
       </header>
     </div>
   );
