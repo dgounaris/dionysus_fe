@@ -4,18 +4,15 @@ import {BACKEND_BASE_URL} from "../constants";
 import {useEffect, useState} from "react";
 import {Button, MenuItem, Select} from "@mui/material";
 import { SelectChangeEvent } from '@mui/material/Select';
-import { useNavigate } from "react-router-dom";
+import { useNavigate  } from "react-router-dom";
 
 const SongSelection = () => {
   const [myPlaylists, setMyPlaylists] = useState([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
+  const jwtToken = localStorage.getItem("dionysus_jwt_token")
 
   const getMyPlaylists = async () => {
-    const { data } = await axios.get(`${BACKEND_BASE_URL}/v1/playlists/me`)
-    return data
-  }
-  const getPlaylistTracks = async () => {
-    const { data } = await axios.get(`${BACKEND_BASE_URL}/v1/playlists/tracks`)
+    const { data } = await axios.get(`${BACKEND_BASE_URL}/v1/playlists/me`, { headers: { "Authorization": `Bearer ${jwtToken}` } })
     return data
   }
 

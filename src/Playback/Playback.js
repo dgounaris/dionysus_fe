@@ -11,6 +11,7 @@ const Playback = () => {
   const location = useLocation()
   const playbackDetails = location.state.playbackDetails
   const playlistName = location.state.playlistName
+  const jwtToken = localStorage.getItem("dionysus_jwt_token")
 
   const [playbackStatus, setPlaybackStatus] = useState('');
 
@@ -26,35 +27,45 @@ const Playback = () => {
       },
       {
         headers: {
-          'Content-Type': 'application/json;charset=UTF-8'
+          'Content-Type': 'application/json;charset=UTF-8',
+          'Authorization': `Bearer ${jwtToken}`
         }
       }
     )
     return data
   }
   const pausePlayback = async () => {
-    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/pause`)
+    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/pause`,
+      {},
+      { headers: { 'Authorization': `Bearer ${jwtToken}` } })
     return data
   }
   const resumePlayback = async () => {
-    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/resume`)
+    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/resume`,
+      {},
+      { headers: { 'Authorization': `Bearer ${jwtToken}` } })
     return data
   }
   const nextPlayback = async () => {
-    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/next`)
+    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/next`,
+      {},
+      { headers: { 'Authorization': `Bearer ${jwtToken}` } })
     return data
   }
   const stopPlayback = async () => {
-    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/stop`)
+    const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/stop`,
+      {},
+      { headers: { 'Authorization': `Bearer ${jwtToken}` } })
     return data
   }
 
   useEffect(() => {
-      startPlayback().then(_ => {
-        setPlaybackStatus('PLAYING')
-      })
-    }
-   , [])
+      if (playbackStatus === '') {
+        startPlayback().then(_ => {
+          setPlaybackStatus('PLAYING')
+        })
+      }
+    }, [])
 
   const pause = () => {
     pausePlayback().then(_ => {
@@ -79,16 +90,24 @@ const Playback = () => {
 
   let navigate = useNavigate()
 
+  let pauseResumeButton
+  if (playbackStatus === 'PLAYING') {
+    pauseResumeButton = <Button className={styles.PlaybackPlanButton} variant="contained" onClick={pause}>Pause</Button>
+  } else {
+    pauseResumeButton = <Button className={styles.PlaybackPlanButton} variant="contained" onClick={resume}>Resume</Button>
+  }
+
   return (
     <div className={styles.PlaybackPlan}>
       <header className={styles.PlaybackPlanHeader}>
         <p>
           Current status: {playbackStatus}
         </p>
-        <Button className={styles.PlaybackPlanButton} variant="contained" onClick={pause}>Pause</Button>
-        <Button className={styles.PlaybackPlanButton} variant="contained" onClick={resume}>Resume</Button>
-        <Button className={styles.PlaybackPlanButton} variant="contained" onClick={next}>Next</Button>
-        <Button className={styles.PlaybackPlanButton} variant="contained" onClick={stop}>Stop</Button>
+        <div align="center">
+          {pauseResumeButton}
+          <Button className={styles.PlaybackPlanButton} variant="contained" onClick={next}>Next</Button>
+          <Button className={styles.PlaybackPlanButton} variant="contained" onClick={stop}>Stop</Button>
+        </div>
       </header>
     </div>
   );

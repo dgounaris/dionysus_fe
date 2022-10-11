@@ -29,6 +29,8 @@
 .PlaybackPlanButton {
   margin-top: 3rem!important;
   background-color: #B100FF!important;
+  margin-left: 1rem!important;
+  margin-right: 1rem!important;
 }
 
 @keyframes PlaybackPlanLogoSpin {

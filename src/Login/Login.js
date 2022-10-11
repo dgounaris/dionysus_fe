@@ -12,7 +12,6 @@ const Login = () => {
         <a
           className="Login-link"
           href="http://localhost:8888/v1/login"
-          target="_blank"
           rel="noopener noreferrer"
         >
           Login with Spotify

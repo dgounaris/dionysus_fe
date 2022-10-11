@@ -10,17 +10,20 @@ import { useNavigate, useLocation } from "react-router-dom";
 const PlaybackPlan = () => {
   const location = useLocation()
   const playlistName = location.state.playlistName
+  const jwtToken = localStorage.getItem("dionysus_jwt_token")
 
   const [playlistTracks, setPlaylistTracks] = useState([]);
   const [myPlaybackDevices, setMyPlaybackDevices] = useState([]);
   const [selectedPlaybackDevice, setSelectedPlaybackDevice] = useState('');
 
   const getPlaylistTracks = async () => {
-    const { data } = await axios.get(`${BACKEND_BASE_URL}/v1/playlists/tracks`, { params: { playlistName: playlistName }})
+    const { data } = await axios.get(`${BACKEND_BASE_URL}/v1/playlists/tracks`,
+      { headers: { 'Authorization': `Bearer ${jwtToken}` }, params: { playlistName: playlistName }})
     return data
   }
   const getPlaybackDevices = async () => {
-    const { data } = await axios.get(`${BACKEND_BASE_URL}/v1/playback/devices`)
+    const { data } = await axios.get(`${BACKEND_BASE_URL}/v1/playback/devices`,
+      { headers: { 'Authorization': `Bearer ${jwtToken}` }})
     return data
   }
 
