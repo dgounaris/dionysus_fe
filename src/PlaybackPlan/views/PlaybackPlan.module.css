@@ -26,9 +26,21 @@
   color: #61dafb;
 }
 
+.PlaybackPlanTextField {
+  margin-top: 1rem!important;
+  background-color: #0F0F0F!important;
+}
+
 .PlaybackPlanButton {
   margin-top: 3rem!important;
   background-color: #B100FF!important;
+  color: white!important;
+}
+
+.PlaybackPlanButton2 {
+  margin-top: 1.7rem!important;
+  background-color: #B100FF!important;
+  color: white!important;
 }
 
 @keyframes PlaybackPlanLogoSpin {

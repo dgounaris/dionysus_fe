@@ -1,10 +1,10 @@
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import Login from './Login/Login';
+import Login from './Login/views/Login';
 import './App.css';
-import SongSelection from "./SongSelection/SongSelection";
-import PlaybackPlan from "./PlaybackPlan/PlaybackPlan";
-import Playback from "./Playback/Playback";
-import LoginCallback from "./Auth/LoginCallback";
+import SongSelection from "./SongSelection/views/SongSelection";
+import PlaybackPlan from "./PlaybackPlan/views/PlaybackPlan";
+import Playback from "./Playback/views/Playback";
+import LoginCallback from "./Auth/views/LoginCallback";
 
 function App() {
   return (
