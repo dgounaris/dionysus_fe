@@ -1,5 +1,7 @@
 .PlaybackPlan {
   text-align: center;
+  background-color: #211825;
+  min-height: 100vh;
 }
 
 .PlaybackPlanLogo {

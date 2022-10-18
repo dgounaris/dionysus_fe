@@ -34,21 +34,19 @@ const SongSelection = () => {
     }
 
     return (
-        <div className={styles.SongSelection}>
-            <header className={styles.SongSelectionHeader}>
-                <p>
-                    Playlist selection for playback
-                </p>
-                <Select className={styles.SongSelectionPlaylistSelect} label="Select your playlist" value={selectedPlaylist} onChange={selectPlaylist}>
-                    {myPlaylists.map(value =>
-                        (
-                            <MenuItem key={value} value={value}>{value}</MenuItem>
-                        )
-                    )}
-                </Select>
-                <Button
-                    className={styles.SongSelectionButton} variant="contained" onClick={submitPlaylist}>Submit</Button>
-            </header>
+        <div className={styles.SongSelectionBody}>
+            <p>
+                Playlist selection for playback
+            </p>
+            <Select className={styles.SongSelectionPlaylistSelect} label="Select your playlist" value={selectedPlaylist} onChange={selectPlaylist}>
+                {myPlaylists.map(value =>
+                    (
+                        <MenuItem key={value} value={value}>{value}</MenuItem>
+                    )
+                )}
+            </Select>
+            <Button
+                className={styles.SongSelectionButton} variant="contained" onClick={submitPlaylist}>Submit</Button>
         </div>
     );
 }

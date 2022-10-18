@@ -1,8 +1,8 @@
 import styles from './PlaybackPlan.module.css';
 import axios from "axios";
 import {BACKEND_BASE_URL} from "../../constants";
-import {useEffect, useState} from "react";
-import {Button, List, ListItem, ListItemText, MenuItem, Select} from "@mui/material";
+import {useEffect, useMemo, useState} from "react";
+import {Box, Button, Grid, List, ListItem, ListItemText, MenuItem, Select, Typography} from "@mui/material";
 import { SelectChangeEvent } from '@mui/material/Select';
 import { useNavigate, useLocation } from "react-router-dom";
 import {Playlist} from "../models/Playlist";
@@ -12,6 +12,8 @@ import {PlaybackPlanListItem} from "../components/PlaybackPlanListItem";
 import {TrackDetails} from "../models/TrackDetails";
 import {SelectionOptions, Track} from "../models/PreviewPlanRequest";
 import {PlaybackPlanOptionsBar} from "../components/PlaybackPlanOptionsBar";
+import {PlaybackPlanList} from "../components/PlaybackPlanList";
+import {useAsync} from "react-use";
 
 
 const PlaybackPlan = () => {
@@ -27,6 +29,7 @@ const PlaybackPlan = () => {
     const [loadingPreview, setLoadingPreview] = useState(false)
     const [myPlaybackDevices, setMyPlaybackDevices] = useState([]);
     const [selectedPlaybackDevice, setSelectedPlaybackDevice] = useState('');
+    const [refreshPreview, setRefreshPreview] = useState({});
 
     const getPlaylistTracks = async (): Promise<Playlist> => {
         const {data} = await axios.get(`${BACKEND_BASE_URL}/v1/playlists/tracks`,
@@ -72,11 +75,46 @@ const PlaybackPlan = () => {
         return previewPlan
     }
 
-    useEffect(() => {
+    const previewPlanData = useAsync(
+        async () => {
+            const playlistTracksData = await getPlaylistTracks()
+            return await postPreviewPlan(playlistTracksData.trackDetails.map(it => {
+                const trackDto : Track = { id: it.id, name: it.name }
+                return trackDto
+            }))
+        }, [
+            refreshPreview
+        ]
+    )
+
+    /*useEffect(() => {
         createPreviewPlan().then(data => {
             setPlaybackTracks(data.tracks)
             setPlaybackSelections(data.selections)
         })
+    }, [
+        refreshPreview
+    ])*/
+
+    const previewPlanDataContent = useMemo(() => {
+        if (previewPlanData.loading) {
+            return <div />
+        }
+        if (previewPlanData.error) {
+            return <div />
+        }
+        const value = previewPlanData.value
+        setPlaybackSelections(value.selections)
+        return (
+            <PlaybackPlanList playbackSelections={value.selections} playbackTracks={value.tracks} />
+        )
+    }, [
+        previewPlanData.loading,
+        previewPlanData.error,
+        previewPlanData.value
+    ])
+
+    useEffect(() => {
         getPlaybackDevices().then(data => {
             setMyPlaybackDevices(data)
             setSelectedPlaybackDevice(data[0].name ?? '')
@@ -104,10 +142,7 @@ const PlaybackPlan = () => {
         )
     }
     const onRefreshPreviewClick = () => {
-        createPreviewPlan().then(data => {
-            setPlaybackTracks(data.tracks)
-            setPlaybackSelections(data.selections)
-        })
+        setRefreshPreview({})
     }
 
     let navigate = useNavigate()
@@ -118,34 +153,29 @@ const PlaybackPlan = () => {
 
     return (
         <div className={styles.PlaybackPlan}>
-            <header className={styles.PlaybackPlanHeader}>
-                <PlaybackPlanOptionsBar
-                    refreshEnabled={!loadingPreview}
-                    onMinimumDurationChange={updateMinimumSelectionDuration()}
-                    onMaximumDurationChange={updateMaximumSelectionDuration()}
-                    onReloadPreview={onRefreshPreviewClick}
-                />
-                <p>
+            <PlaybackPlanOptionsBar
+                refreshEnabled={!loadingPreview}
+                onMinimumDurationChange={updateMinimumSelectionDuration()}
+                onMaximumDurationChange={updateMaximumSelectionDuration()}
+                onReloadPreview={onRefreshPreviewClick}
+            />
+            <Grid item xs={12}>
+                <Typography color="white">
                     The following tracks will be played in this order:
-                </p>
-                <List>
-                    {playbackSelections.map(value =>
-                        <PlaybackPlanListItem
-                            trackName={value.name}
-                            allSections={playbackTracks.find(it => it.id == value.id).sections}
-                            selectedSections={value.sections}
-                        />
-                    )}
-                </List>
-                <Select className={styles.PlaybackPlanSelect} label="Select your playback device" value={selectedPlaybackDevice} onChange={selectPlaybackDevice}>
-                    {myPlaybackDevices.map(value =>
-                        (
-                            <MenuItem key={value.name} value={value.name}>{value.name}</MenuItem>
-                        )
-                    )}
-                </Select>
+                </Typography>
+            </Grid>
+            {previewPlanDataContent}
+            <Select className={styles.PlaybackPlanSelect} label="Select your playback device" value={selectedPlaybackDevice} onChange={selectPlaybackDevice}>
+                {myPlaybackDevices.map(value =>
+                    (
+                        <MenuItem key={value.name} value={value.name}>{value.name}</MenuItem>
+                    )
+                )}
+            </Select>
+            <Box>
                 <Button className={styles.PlaybackPlanButton} variant="contained" onClick={startPlayback}>Play</Button>
-            </header>
+            </Box>
+
         </div>
     );
 }

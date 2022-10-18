@@ -1,13 +1,4 @@
-.SongSelection {
-  text-align: center;
-}
-
-.SongSelectionLogo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.SongSelectionHeader {
+.SongSelectionBody {
   background-color: #211825;
   min-height: 100vh;
   display: flex;

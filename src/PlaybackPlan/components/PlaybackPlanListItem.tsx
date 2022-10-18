@@ -28,7 +28,7 @@ export const PlaybackPlanListItem: React.FC<{
             <Container maxWidth={false}>
                 <Grid container>
                     <Grid item xs={3}>
-                        <Typography>{trackName}</Typography>
+                        <Typography color="white">{trackName}</Typography>
                     </Grid>
                     <Grid container spacing={1}>
 
