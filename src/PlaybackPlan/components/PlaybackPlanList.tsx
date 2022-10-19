@@ -2,15 +2,21 @@ import React from "react";
 import {TrackDetails, TrackSection} from "../models/TrackDetails";
 import {PlaybackPlanListItem} from "./PlaybackPlanListItem";
 import {List} from "@mui/material";
-import {TrackSelection} from "../models/PreviewPlan";
+import {PreviewPlan, TrackSelection} from "../models/PreviewPlan";
+import {AsyncState} from "react-use/lib/useAsyncFn";
 
 export const PlaybackPlanList: React.FC<{
     playbackSelections: TrackSelection[],
-    playbackTracks: TrackDetails[]
+    playbackTracks: TrackDetails[],
+    isLoading: boolean
 }> = ({
     playbackSelections,
-    playbackTracks
+    playbackTracks,
+    isLoading
 }) => {
+    if (isLoading) {
+        return <div />
+    }
     return (
         <List>
             {playbackSelections.map(value =>

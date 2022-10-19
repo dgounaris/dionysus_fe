@@ -62,56 +62,22 @@ const PlaybackPlan = () => {
     }
 
     const createPreviewPlan = async () => {
-        setLoadingPreview(true)
-
         const playlistTracksData = await getPlaylistTracks()
         const previewPlan = await postPreviewPlan(playlistTracksData.trackDetails.map(it => {
             const trackDto : Track = { id: it.id, name: it.name }
             return trackDto
         }))
-
-        setLoadingPreview(false)
-
         return previewPlan
     }
-
-    const previewPlanData = useAsync(
-        async () => {
-            const playlistTracksData = await getPlaylistTracks()
-            return await postPreviewPlan(playlistTracksData.trackDetails.map(it => {
-                const trackDto : Track = { id: it.id, name: it.name }
-                return trackDto
-            }))
-        }, [
-            refreshPreview
-        ]
-    )
-
-    /*useEffect(() => {
+    useEffect(() => {
+        setLoadingPreview(true)
         createPreviewPlan().then(data => {
             setPlaybackTracks(data.tracks)
             setPlaybackSelections(data.selections)
+            setLoadingPreview(false)
         })
     }, [
         refreshPreview
-    ])*/
-
-    const previewPlanDataContent = useMemo(() => {
-        if (previewPlanData.loading) {
-            return <div />
-        }
-        if (previewPlanData.error) {
-            return <div />
-        }
-        const value = previewPlanData.value
-        setPlaybackSelections(value.selections)
-        return (
-            <PlaybackPlanList playbackSelections={value.selections} playbackTracks={value.tracks} />
-        )
-    }, [
-        previewPlanData.loading,
-        previewPlanData.error,
-        previewPlanData.value
     ])
 
     useEffect(() => {
@@ -164,7 +130,7 @@ const PlaybackPlan = () => {
                     The following tracks will be played in this order:
                 </Typography>
             </Grid>
-            {previewPlanDataContent}
+            <PlaybackPlanList playbackSelections={playbackSelections} playbackTracks={playbackTracks} isLoading={loadingPreview} />
             <Select className={styles.PlaybackPlanSelect} label="Select your playback device" value={selectedPlaybackDevice} onChange={selectPlaybackDevice}>
                 {myPlaybackDevices.map(value =>
                     (

@@ -2,10 +2,11 @@ import styles from "./SongSelection.module.css";
 import axios from "axios";
 import {BACKEND_BASE_URL} from "../../constants";
 import {useEffect, useState} from "react";
-import {Button, MenuItem, Select} from "@mui/material";
 import { SelectChangeEvent } from '@mui/material/Select';
 import { useNavigate } from "react-router-dom";
 import React from 'react';
+import {PlaylistList} from "../components/PlaylistList";
+import {PlaylistSubmitButton} from "../components/PlaylistSubmitButton";
 
 const SongSelection = () => {
     const [myPlaylists, setMyPlaylists] = useState([]);
@@ -17,10 +18,13 @@ const SongSelection = () => {
         return data
     }
 
+    const [myPlaylistsLoading, setMyPlaylistsLoading] = useState<boolean>(false);
     useEffect(() => {
+        setMyPlaylistsLoading(true)
         getMyPlaylists().then(data => {
             setMyPlaylists(data)
             setSelectedPlaylist(data[0])
+            setMyPlaylistsLoading(false)
         })
     }, [])
 
@@ -30,7 +34,7 @@ const SongSelection = () => {
 
     let navigate = useNavigate()
     const submitPlaylist = () => {
-        navigate("/playback/plan", { state: { playlistName: selectedPlaylist } }) // this might need to be a "finally"?
+        navigate("/playback/plan", { state: { playlistName: selectedPlaylist } })
     }
 
     return (
@@ -38,15 +42,8 @@ const SongSelection = () => {
             <p>
                 Playlist selection for playback
             </p>
-            <Select className={styles.SongSelectionPlaylistSelect} label="Select your playlist" value={selectedPlaylist} onChange={selectPlaylist}>
-                {myPlaylists.map(value =>
-                    (
-                        <MenuItem key={value} value={value}>{value}</MenuItem>
-                    )
-                )}
-            </Select>
-            <Button
-                className={styles.SongSelectionButton} variant="contained" onClick={submitPlaylist}>Submit</Button>
+            <PlaylistList selectedPlaylist={selectedPlaylist} onChangeSelected={selectPlaylist} myPlaylists={myPlaylists} />
+            <PlaylistSubmitButton onClick={submitPlaylist} disabled={myPlaylistsLoading} />
         </div>
     );
 }
