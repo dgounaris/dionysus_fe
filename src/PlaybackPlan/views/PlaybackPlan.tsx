@@ -127,7 +127,7 @@ const PlaybackPlan = () => {
                     The following tracks will be played in this order:
                 </Typography>
             </Grid>
-            <PlaybackPlanList playbackSelections={previewPlan.selections} playbackTracks={previewPlan.tracks} isLoading={loadingPreview} />
+            <PlaybackPlanList playbackSelections={previewPlan?.selections ?? []} playbackTracks={previewPlan?.tracks ?? []} isLoading={loadingPreview} />
             <PlaybackDeviceSelect playbackDevices={playbackDevices} selectedPlaybackDevice={selectedPlaybackDevice} onChangeSelected={selectPlaybackDevice} />
             <Box>
                 <Button className={styles.PlaybackPlanButton} variant="contained" onClick={startPlayback}>Play</Button>
