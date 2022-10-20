@@ -8,12 +8,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {Playlist} from "../models/Playlist";
 import {PreviewPlan, TrackSelection} from "../models/PreviewPlan";
 import React from 'react';
-import {PlaybackPlanListItem} from "../components/PlaybackPlanListItem";
-import {TrackDetails} from "../models/TrackDetails";
 import {SelectionOptions, Track} from "../models/PreviewPlanRequest";
 import {PlaybackPlanOptionsBar} from "../components/PlaybackPlanOptionsBar";
 import {PlaybackPlanList} from "../components/PlaybackPlanList";
-import {useAsync} from "react-use";
+import {AvailableDevice} from "../models/AvailableDevice";
+import {PlaybackDeviceSelect} from "../components/PlaybackDeviceSelect";
 
 
 const PlaybackPlan = () => {
@@ -21,13 +20,12 @@ const PlaybackPlan = () => {
     const playlistName = location.state.playlistName
     const jwtToken = localStorage.getItem("dionysus_jwt_token")
 
-    const [playbackTracks, setPlaybackTracks] = useState<TrackDetails[]>([]);
-    const [playbackSelections, setPlaybackSelections] = useState<TrackSelection[]>([]);
+    const [previewPlan, setPreviewPlan] = useState<PreviewPlan>(null);
     const [selectionOptions, setSelectionOptions] = useState<SelectionOptions>(
         { minimumSelectionDuration: 75, maximumSelectionDuration: 100 }
-    )
-    const [loadingPreview, setLoadingPreview] = useState(false)
-    const [myPlaybackDevices, setMyPlaybackDevices] = useState([]);
+    );
+    const [loadingPreview, setLoadingPreview] = useState<boolean>(false)
+    const [playbackDevices, setPlaybackDevices] = useState<AvailableDevice[]>([]);
     const [selectedPlaybackDevice, setSelectedPlaybackDevice] = useState('');
     const [refreshPreview, setRefreshPreview] = useState({});
 
@@ -47,19 +45,6 @@ const PlaybackPlan = () => {
         )
         return data
     }
-    const postSubmitPlan = async (trackSelections: TrackSelection[]) => {
-        const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/plan/submit`,
-            {
-                selections: trackSelections
-            },
-            { headers: { 'Authorization': `Bearer ${jwtToken}` } }
-        )
-    }
-    const getPlaybackDevices = async () => {
-        const { data } = await axios.get(`${BACKEND_BASE_URL}/v1/playback/devices`,
-            { headers: { 'Authorization': `Bearer ${jwtToken}` }})
-        return data
-    }
 
     const createPreviewPlan = async () => {
         const playlistTracksData = await getPlaylistTracks()
@@ -72,17 +57,21 @@ const PlaybackPlan = () => {
     useEffect(() => {
         setLoadingPreview(true)
         createPreviewPlan().then(data => {
-            setPlaybackTracks(data.tracks)
-            setPlaybackSelections(data.selections)
+            setPreviewPlan(data)
             setLoadingPreview(false)
         })
     }, [
         refreshPreview
     ])
 
+    const getPlaybackDevices = async () => {
+        const { data } = await axios.get(`${BACKEND_BASE_URL}/v1/playback/devices`,
+            { headers: { 'Authorization': `Bearer ${jwtToken}` }})
+        return data
+    }
     useEffect(() => {
         getPlaybackDevices().then(data => {
-            setMyPlaybackDevices(data)
+            setPlaybackDevices(data)
             setSelectedPlaybackDevice(data[0].name ?? '')
         })
     }, [])
@@ -112,9 +101,17 @@ const PlaybackPlan = () => {
     }
 
     let navigate = useNavigate()
+    const postSubmitPlan = async (trackSelections: TrackSelection[]) => {
+        const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/plan/submit`,
+            {
+                selections: trackSelections
+            },
+            { headers: { 'Authorization': `Bearer ${jwtToken}` } }
+        )
+    }
     const startPlayback = async () => {
-        await postSubmitPlan(playbackSelections)
-        navigate("/playback/active", { state: { playbackDetails: myPlaybackDevices.find(it => it.name === selectedPlaybackDevice) } })
+        await postSubmitPlan(previewPlan.selections)
+        navigate("/playback/active", { state: { playbackDetails: playbackDevices.find(it => it.name === selectedPlaybackDevice) } })
     }
 
     return (
@@ -130,18 +127,11 @@ const PlaybackPlan = () => {
                     The following tracks will be played in this order:
                 </Typography>
             </Grid>
-            <PlaybackPlanList playbackSelections={playbackSelections} playbackTracks={playbackTracks} isLoading={loadingPreview} />
-            <Select className={styles.PlaybackPlanSelect} label="Select your playback device" value={selectedPlaybackDevice} onChange={selectPlaybackDevice}>
-                {myPlaybackDevices.map(value =>
-                    (
-                        <MenuItem key={value.name} value={value.name}>{value.name}</MenuItem>
-                    )
-                )}
-            </Select>
+            <PlaybackPlanList playbackSelections={previewPlan.selections} playbackTracks={previewPlan.tracks} isLoading={loadingPreview} />
+            <PlaybackDeviceSelect playbackDevices={playbackDevices} selectedPlaybackDevice={selectedPlaybackDevice} onChangeSelected={selectPlaybackDevice} />
             <Box>
                 <Button className={styles.PlaybackPlanButton} variant="contained" onClick={startPlayback}>Play</Button>
             </Box>
-
         </div>
     );
 }
