@@ -1,27 +1,20 @@
 import styles from "./SongSelection.module.css";
-import axios from "axios";
-import {BACKEND_BASE_URL} from "../../constants";
 import {useEffect, useState} from "react";
 import { SelectChangeEvent } from '@mui/material/Select';
 import { useNavigate } from "react-router-dom";
 import React from 'react';
 import {PlaylistList} from "../components/PlaylistList";
 import {PlaylistSubmitButton} from "../components/PlaylistSubmitButton";
+import {backendClient} from "../../common/clients/http/BackendClient";
 
 const SongSelection = () => {
     const [myPlaylists, setMyPlaylists] = useState([]);
     const [selectedPlaylist, setSelectedPlaylist] = useState('');
-    const jwtToken = localStorage.getItem("dionysus_jwt_token")
-
-    const getMyPlaylists = async () => {
-        const { data } = await axios.get(`${BACKEND_BASE_URL}/v1/playlists/me`, { headers: { "Authorization": `Bearer ${jwtToken}` } })
-        return data
-    }
 
     const [myPlaylistsLoading, setMyPlaylistsLoading] = useState<boolean>(false);
     useEffect(() => {
         setMyPlaylistsLoading(true)
-        getMyPlaylists().then(data => {
+        backendClient.get<string[]>('/v1/playlists/me').then(data => {
             setMyPlaylists(data)
             setSelectedPlaylist(data[0])
             setMyPlaylistsLoading(false)

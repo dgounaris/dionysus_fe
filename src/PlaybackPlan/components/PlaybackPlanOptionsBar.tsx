@@ -29,7 +29,7 @@ export const PlaybackPlanOptionsBar: React.FC<{
                             shrink: true,
                             style: { color: '#E0E0E0' }
                         }}
-                        defaultValue='75'
+                        defaultValue='60'
                         variant="filled"
                         onChange={(e) => onMinimumDurationChange(Number(e.target.value))}
                     />
@@ -47,7 +47,7 @@ export const PlaybackPlanOptionsBar: React.FC<{
                             shrink: true,
                             style: { color: '#E0E0E0' }
                         }}
-                        defaultValue='100'
+                        defaultValue='90'
                         variant="filled"
                         onChange={(e) => onMaximumDurationChange(Number(e.target.value))}
                     />

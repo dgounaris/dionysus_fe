@@ -2,18 +2,18 @@ import axios from "axios";
 import {BACKEND_BASE_URL} from '../../../constants';
 
 class BackendClient {
-    async get<T>(request: string, queryParams: any, additionalHeaders: any): Promise<T> {
-        return await axios.get(`${BACKEND_BASE_URL}/v1/playlists/tracks`,
-            {headers: {'Authorization': `Bearer ${BackendClient.getJwtToken()}`, ...additionalHeaders}, params: queryParams})
+    async get<T>(request: string, queryParams: any = null, additionalHeaders: any = null): Promise<T> {
+        return (await axios.get(`${BACKEND_BASE_URL}${request}`,
+            {headers: {'Authorization': `Bearer ${BackendClient.getJwtToken()}`, ...additionalHeaders}, params: queryParams})).data
     }
 
-    async post<T, R>(request: string, queryParams: any, body: R, additionalHeaders: any): Promise<T> {
-        return await axios.post(`${BACKEND_BASE_URL}/v1/playlists/tracks`,
+    async post<T, R>(request: string, queryParams: any = null, body: R | null = null, additionalHeaders: any = null): Promise<T> {
+        return (await axios.post(`${BACKEND_BASE_URL}${request}`,
             body,
-            {headers: {'Authorization': `Bearer ${BackendClient.getJwtToken()}`, ...additionalHeaders}, params: queryParams})
+            {headers: {'Authorization': `Bearer ${BackendClient.getJwtToken()}`, ...additionalHeaders}, params: queryParams})).data
     }
 
-    static setJwtToken(token: string) {
+    setJwtToken(token: string) {
         localStorage.setItem("dionysus_jwt_token", token)
     }
 
@@ -21,3 +21,5 @@ class BackendClient {
         return localStorage.getItem("dionysus_jwt_token")
     }
 }
+
+export const backendClient = new BackendClient()

@@ -5,5 +5,12 @@ export type PlaybackStartRequest = {
 export type PlaybackDetails = {
     selectedDeviceId: string,
     selectedDeviceType: string,
-    selectedDeviceVolumePercent: number
+    selectedDeviceVolumePercent: number,
+    fadeDetails: FadeDetails
+}
+
+export type FadeDetails = {
+    fadeMilliseconds: number,
+    volumeChangeIntervalMilliseconds: number,
+    volumeTotalReduction: number
 }

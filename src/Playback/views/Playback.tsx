@@ -1,61 +1,36 @@
 import styles from './Playback.module.css';
-import axios from "axios";
-import {BACKEND_BASE_URL} from "../../constants";
 import {useEffect, useState} from "react";
-import {Button, List, ListItem, ListItemText, MenuItem, Select} from "@mui/material";
+import {Button} from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import React from 'react';
 import {PlaybackStartRequest} from "../models/PlaybackStartRequest";
+import {backendClient} from "../../common/clients/http/BackendClient";
 
 const Playback = () => {
     const location = useLocation()
-    const playbackDetails = location.state.playbackDetails
-    const jwtToken = localStorage.getItem("dionysus_jwt_token")
+    const playbackDevice = location.state.playbackDevice
+    const fadeDetails = location.state.fadeDetails
 
     const [playbackStatus, setPlaybackStatus] = useState('');
 
     const startPlayback = async () => {
         const body: PlaybackStartRequest = {
             playbackDetails: {
-                selectedDeviceId: playbackDetails.id,
-                selectedDeviceType: playbackDetails.type,
-                selectedDeviceVolumePercent: playbackDetails.volumePercent
-            }
-        }
-        const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/play/auto`,
-            body,
-            {
-                headers: {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    'Authorization': `Bearer ${jwtToken}`
+                selectedDeviceId: playbackDevice.id,
+                selectedDeviceType: playbackDevice.type,
+                selectedDeviceVolumePercent: playbackDevice.volumePercent,
+                fadeDetails: {
+                    fadeMilliseconds: fadeDetails.fadeMilliseconds,
+                    volumeChangeIntervalMilliseconds: fadeDetails.volumeChangeIntervalMilliseconds,
+                    volumeTotalReduction: fadeDetails.volumeTotalReduction
                 }
             }
+        }
+        return backendClient.post<any, PlaybackStartRequest>(
+            '/v1/playback/play/auto',
+            null,
+            body
         )
-        return data
-    }
-    const pausePlayback = async () => {
-        const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/pause`,
-            {},
-            { headers: { 'Authorization': `Bearer ${jwtToken}` } })
-        return data
-    }
-    const resumePlayback = async () => {
-        const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/resume`,
-            {},
-            { headers: { 'Authorization': `Bearer ${jwtToken}` } })
-        return data
-    }
-    const nextPlayback = async () => {
-        const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/next`,
-            {},
-            { headers: { 'Authorization': `Bearer ${jwtToken}` } })
-        return data
-    }
-    const stopPlayback = async () => {
-        const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/playback/stop`,
-            {},
-            { headers: { 'Authorization': `Bearer ${jwtToken}` } })
-        return data
     }
 
     useEffect(() => {
@@ -67,22 +42,22 @@ const Playback = () => {
     }, [])
 
     const pause = () => {
-        pausePlayback().then(_ => {
+        backendClient.post<any, null>('/v1/playback/pause').then(_ => {
             setPlaybackStatus('PAUSED')
         })
     }
     const resume = () => {
-        resumePlayback().then(_ => {
+        backendClient.post<any, null>('/v1/playback/resume').then(_ => {
             setPlaybackStatus('PLAYING')
         })
     }
     const next = () => {
-        nextPlayback().then(_ => {
+        backendClient.post<any, null>('/v1/playback/next').then(_ => {
             setPlaybackStatus('PLAYING')
         })
     }
     const stop = () => {
-        stopPlayback().then(data => {
+        backendClient.post<any, null>('/v1/playback/stop').then(_ => {
             setPlaybackStatus('STOPPED')
         })
     }

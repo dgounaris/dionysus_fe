@@ -1,58 +1,51 @@
 import styles from './PlaybackPlan.module.css';
-import axios from "axios";
-import {BACKEND_BASE_URL} from "../../constants";
-import {useEffect, useMemo, useState} from "react";
-import {Box, Button, Grid, List, ListItem, ListItemText, MenuItem, Select, Typography} from "@mui/material";
+import {useEffect, useState} from "react";
+import {Box, Button, Grid, Typography} from "@mui/material";
 import { SelectChangeEvent } from '@mui/material/Select';
 import { useNavigate, useLocation } from "react-router-dom";
 import {Playlist} from "../models/Playlist";
-import {PreviewPlan, TrackSelection} from "../models/PreviewPlan";
+import {PreviewPlan} from "../models/PreviewPlan";
 import React from 'react';
-import {SelectionOptions, Track} from "../models/PreviewPlanRequest";
+import {PreviewPlanRequest, SelectionOptions} from "../models/PreviewPlanRequest";
 import {PlaybackPlanOptionsBar} from "../components/PlaybackPlanOptionsBar";
 import {PlaybackPlanList} from "../components/PlaybackPlanList";
 import {AvailableDevice} from "../models/AvailableDevice";
 import {PlaybackDeviceSelect} from "../components/PlaybackDeviceSelect";
+import {backendClient} from "../../common/clients/http/BackendClient";
+import {SubmitPlanRequest} from "../models/SubmitPlanRequest";
+import {FadeDetails} from "../models/FadeDetails";
 
 
 const PlaybackPlan = () => {
     const location = useLocation()
     const playlistName = location.state.playlistName
-    const jwtToken = localStorage.getItem("dionysus_jwt_token")
 
-    const [previewPlan, setPreviewPlan] = useState<PreviewPlan>(null);
+    const [previewPlan, setPreviewPlan] = useState<PreviewPlan | null>(null);
     const [selectionOptions, setSelectionOptions] = useState<SelectionOptions>(
-        { minimumSelectionDuration: 75, maximumSelectionDuration: 100 }
+        { minimumSelectionDuration: 60, maximumSelectionDuration: 90 }
+    );
+    const [fadeDetails, setFadeDetails] = useState<FadeDetails>(
+        { fadeMilliseconds: 50, volumeChangeIntervalMilliseconds: 10, volumeTotalReduction: 25 }
     );
     const [loadingPreview, setLoadingPreview] = useState<boolean>(false)
     const [playbackDevices, setPlaybackDevices] = useState<AvailableDevice[]>([]);
-    const [selectedPlaybackDevice, setSelectedPlaybackDevice] = useState('');
+    const [selectedPlaybackDevice, setSelectedPlaybackDevice] = useState<string>('');
     const [refreshPreview, setRefreshPreview] = useState({});
 
-    const getPlaylistTracks = async (): Promise<Playlist> => {
-        const {data} = await axios.get(`${BACKEND_BASE_URL}/v1/playlists/tracks`,
-            {headers: {'Authorization': `Bearer ${jwtToken}`}, params: {playlistName: playlistName}})
-        return data
-    }
-    const postPreviewPlan = async (tracks: Track[]) : Promise<PreviewPlan> => {
-        const previewPlanRequest = {
-            tracks: tracks,
-            selectionOptions: selectionOptions
-        }
-        const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/plan/preview`,
-            previewPlanRequest,
-            { headers: { 'Authorization': `Bearer ${jwtToken}` } }
-        )
-        return data
-    }
-
     const createPreviewPlan = async () => {
-        const playlistTracksData = await getPlaylistTracks()
-        const previewPlan = await postPreviewPlan(playlistTracksData.trackDetails.map(it => {
-            const trackDto : Track = { id: it.id, name: it.name }
-            return trackDto
-        }))
-        return previewPlan
+        const playlistTracksData = await backendClient.get<Playlist>(
+            '/v1/playlists/tracks', {playlistName: playlistName}
+        )
+        return await backendClient.post<PreviewPlan, PreviewPlanRequest>(
+            '/v1/plan/preview',
+            null,
+            {
+                tracks: playlistTracksData.trackDetails.map(trackDetailSet => {
+                    return { id: trackDetailSet.id, name: trackDetailSet.name }
+                }),
+                selectionOptions: selectionOptions
+            }
+        )
     }
     useEffect(() => {
         setLoadingPreview(true)
@@ -64,13 +57,8 @@ const PlaybackPlan = () => {
         refreshPreview
     ])
 
-    const getPlaybackDevices = async () => {
-        const { data } = await axios.get(`${BACKEND_BASE_URL}/v1/playback/devices`,
-            { headers: { 'Authorization': `Bearer ${jwtToken}` }})
-        return data
-    }
     useEffect(() => {
-        getPlaybackDevices().then(data => {
+        backendClient.get<AvailableDevice[]>('/v1/playback/devices').then(data => {
             setPlaybackDevices(data)
             setSelectedPlaybackDevice(data[0].name ?? '')
         })
@@ -101,17 +89,17 @@ const PlaybackPlan = () => {
     }
 
     let navigate = useNavigate()
-    const postSubmitPlan = async (trackSelections: TrackSelection[]) => {
-        const { data } = await axios.post(`${BACKEND_BASE_URL}/v1/plan/submit`,
-            {
-                selections: trackSelections
-            },
-            { headers: { 'Authorization': `Bearer ${jwtToken}` } }
-        )
-    }
     const startPlayback = async () => {
-        await postSubmitPlan(previewPlan.selections)
-        navigate("/playback/active", { state: { playbackDetails: playbackDevices.find(it => it.name === selectedPlaybackDevice) } })
+        await backendClient.post<any, SubmitPlanRequest>(
+            '/v1/plan/submit',
+            null,
+            { selections: previewPlan.selections }
+        )
+        const device = playbackDevices.find(it => it.name === selectedPlaybackDevice);
+        navigate("/playback/active", { state: {
+            playbackDevice: device,
+            fadeDetails: fadeDetails
+        } })
     }
 
     return (
