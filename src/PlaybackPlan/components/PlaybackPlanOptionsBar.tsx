@@ -16,7 +16,7 @@ export const PlaybackPlanOptionsBar: React.FC<{
     return (
         <Container maxWidth={false}>
             <Grid container>
-                <Grid item lg={2}>
+                <Grid item lg={2} md={6} xs={12}>
                     <TextField
                         className={styles.PlaybackPlanTextField}
                         id="minimum-duration"
@@ -34,7 +34,7 @@ export const PlaybackPlanOptionsBar: React.FC<{
                         onChange={(e) => onMinimumDurationChange(Number(e.target.value))}
                     />
                 </Grid>
-                <Grid item lg={2}>
+                <Grid item lg={2} md={6} xs={12}>
                     <TextField
                         className={styles.PlaybackPlanTextField}
                         id="maximum-duration"
@@ -52,7 +52,7 @@ export const PlaybackPlanOptionsBar: React.FC<{
                         onChange={(e) => onMaximumDurationChange(Number(e.target.value))}
                     />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item lg={2} md={6} xs={12}>
                     <Button className={styles.PlaybackPlanButton2} disabled={!refreshEnabled} variant="contained" onClick={onReloadPreview}>Refresh Preview</Button>
                 </Grid>
             </Grid>

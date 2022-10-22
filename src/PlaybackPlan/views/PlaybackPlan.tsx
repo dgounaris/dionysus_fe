@@ -14,6 +14,7 @@ import {PlaybackDeviceSelect} from "../components/PlaybackDeviceSelect";
 import {backendClient} from "../../common/clients/http/BackendClient";
 import {SubmitPlanRequest} from "../models/SubmitPlanRequest";
 import {FadeDetails} from "../models/FadeDetails";
+import {PlaybackPlanSubmitOptionsBar} from "../components/PlaybackPlanSubmitOptionsBar";
 
 
 const PlaybackPlan = () => {
@@ -68,7 +69,7 @@ const PlaybackPlan = () => {
         setSelectedPlaybackDevice(event.target.value);
     };
 
-    const updateMinimumSelectionDuration = () => (newDuration: number) => {
+    const updateMinimumSelectionDuration = (newDuration: number) => {
         setSelectionOptions(
             {
                 minimumSelectionDuration: newDuration,
@@ -76,7 +77,7 @@ const PlaybackPlan = () => {
             }
         )
     }
-    const updateMaximumSelectionDuration = () => (newDuration: number) => {
+    const updateMaximumSelectionDuration = (newDuration: number) => {
         setSelectionOptions(
             {
                 minimumSelectionDuration: selectionOptions.minimumSelectionDuration,
@@ -86,6 +87,28 @@ const PlaybackPlan = () => {
     }
     const onRefreshPreviewClick = () => {
         setRefreshPreview({})
+    }
+
+    const onFadeMillisecondsChange = (newFadeMilliseconds: number) => {
+        setFadeDetails(
+            {
+                ...fadeDetails, fadeMilliseconds: newFadeMilliseconds
+            }
+        )
+    }
+    const onVolumeChangeIntervalChange = (newVolumeChangeInterval: number) => {
+        setFadeDetails(
+            {
+                ...fadeDetails, volumeChangeIntervalMilliseconds: newVolumeChangeInterval
+            }
+        )
+    }
+    const onVolumeTotalReductionChange = (newVolumeTotalReduction: number) => {
+        setFadeDetails(
+            {
+                ...fadeDetails, volumeTotalReduction: newVolumeTotalReduction
+            }
+        )
     }
 
     let navigate = useNavigate()
@@ -104,10 +127,17 @@ const PlaybackPlan = () => {
 
     return (
         <div className={styles.PlaybackPlan}>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <Typography color="white">
+                        Playback Preview
+                    </Typography>
+                </Grid>
+            </Grid>
             <PlaybackPlanOptionsBar
                 refreshEnabled={!loadingPreview}
-                onMinimumDurationChange={updateMinimumSelectionDuration()}
-                onMaximumDurationChange={updateMaximumSelectionDuration()}
+                onMinimumDurationChange={updateMinimumSelectionDuration}
+                onMaximumDurationChange={updateMaximumSelectionDuration}
                 onReloadPreview={onRefreshPreviewClick}
             />
             <Grid item xs={12}>
@@ -117,6 +147,11 @@ const PlaybackPlan = () => {
             </Grid>
             <PlaybackPlanList playbackSelections={previewPlan?.selections ?? []} playbackTracks={previewPlan?.tracks ?? []} isLoading={loadingPreview} />
             <PlaybackDeviceSelect playbackDevices={playbackDevices} selectedPlaybackDevice={selectedPlaybackDevice} onChangeSelected={selectPlaybackDevice} />
+            <PlaybackPlanSubmitOptionsBar
+                onFadeMillisecondsChange={onFadeMillisecondsChange}
+                onVolumeChangeIntervalChange={onVolumeChangeIntervalChange}
+                onVolumeTotalReductionChange={onVolumeTotalReductionChange}
+            />
             <Box>
                 <Button className={styles.PlaybackPlanButton} variant="contained" onClick={startPlayback}>Play</Button>
             </Box>
