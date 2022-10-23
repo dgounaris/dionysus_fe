@@ -1,16 +1,24 @@
 import axios from "axios";
-import {BACKEND_BASE_URL} from '../../../constants';
+import {BACKEND_BASE_URL} from '../../constants';
 
 class BackendClient {
     async get<T>(request: string, queryParams: any = null, additionalHeaders: any = null): Promise<T> {
-        return (await axios.get(`${BACKEND_BASE_URL}${request}`,
-            {headers: {'Authorization': `Bearer ${BackendClient.getJwtToken()}`, ...additionalHeaders}, params: queryParams})).data
+        const { status, data } = await axios.get(`${BACKEND_BASE_URL}${request}`,
+            {headers: {'Authorization': `Bearer ${BackendClient.getJwtToken()}`, ...additionalHeaders}, params: queryParams})
+        if (status >= 400) {
+            throw Error(`response ${status}, ${data}`)
+        }
+        return data
     }
 
     async post<T, R>(request: string, queryParams: any = null, body: R | null = null, additionalHeaders: any = null): Promise<T> {
-        return (await axios.post(`${BACKEND_BASE_URL}${request}`,
+        const { status, data } = await axios.post(`${BACKEND_BASE_URL}${request}`,
             body,
-            {headers: {'Authorization': `Bearer ${BackendClient.getJwtToken()}`, ...additionalHeaders}, params: queryParams})).data
+            {headers: {'Authorization': `Bearer ${BackendClient.getJwtToken()}`, ...additionalHeaders}, params: queryParams})
+        if (status >= 400) {
+            throw Error(`response ${status}, ${data}`)
+        }
+        return data
     }
 
     setJwtToken(token: string) {
