@@ -1,9 +1,10 @@
 import React from "react";
 import {TrackDetails, TrackSection} from "../models/TrackDetails";
 import {PlaybackPlanListItem} from "./PlaybackPlanListItem";
-import {List} from "@mui/material";
+import {Grid, List} from "@mui/material";
 import {PreviewPlan, TrackSelection} from "../models/PreviewPlan";
 import {AsyncState} from "react-use/lib/useAsyncFn";
+import {LoadingBox} from "../../common/components/LoadingBox";
 
 export const PlaybackPlanList: React.FC<{
     playbackSelections: TrackSelection[],
@@ -15,17 +16,23 @@ export const PlaybackPlanList: React.FC<{
     isLoading
 }) => {
     if (isLoading) {
-        return <div />
+        return (
+            <Grid item xs={12}>
+                <LoadingBox textColor="white" />
+            </Grid>
+        )
     }
     return (
-        <List>
-            {playbackSelections.map(value =>
-                <PlaybackPlanListItem
-                    trackName={value.name}
-                    allSections={playbackTracks.find(it => it.id == value.id).sections}
-                    selectedSections={value.sections}
-                />
-            )}
-        </List>
+        <Grid item xs={12}>
+            <List>
+                {playbackSelections.map(value =>
+                    <PlaybackPlanListItem
+                        trackName={value.name}
+                        allSections={playbackTracks.find(it => it.id == value.id).sections}
+                        selectedSections={value.sections}
+                    />
+                )}
+            </List>
+        </Grid>
     )
 }
