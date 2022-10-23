@@ -1,9 +1,13 @@
 import React from 'react';
 import './Home.css';
-import {Button} from "@mui/material";
-import {customTheme} from "../../common/themes/ThemeModuleAugmentation";
+import {SimpleButton} from "../../common/components/SimpleButton";
+import {backendClient} from "../../common/clients/http/BackendClient";
 
 const Home: React.FC = () => {
+    const onLoginButtonClick = async () => {
+        await backendClient.get<any>("/v1/login")
+    }
+
     return (
         <div className="Home">
             <header className="Home-header">
@@ -17,7 +21,7 @@ const Home: React.FC = () => {
                 >
                     Login with Spotify
                 </a>
-                <Button sx={{ backgroundColor: customTheme.custom.palette.primary.main }} variant="contained" />
+                <SimpleButton text="Login with Spotify" onClick={onLoginButtonClick} />
             </header>
         </div>
     );
