@@ -1,17 +1,17 @@
 import styles from './Playback.module.css';
-import {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {Button} from "@mui/material";
-import { useNavigate, useLocation } from "react-router-dom";
-import React from 'react';
+import {useLocation, useNavigate} from "react-router-dom";
 import {PlaybackStartRequest} from "../models/PlaybackStartRequest";
 import {backendClient} from "../../common/clients/http/BackendClient";
+import {PlaybackState, PlaybackUpdateResponse} from "../models/PlaybackUpdateResponse";
 
 const Playback = () => {
     const location = useLocation()
     const playbackDevice = location.state.playbackDevice
     const fadeDetails = location.state.fadeDetails
 
-    const [playbackStatus, setPlaybackStatus] = useState('');
+    const [playbackStatus, setPlaybackStatus] = useState<PlaybackState | null>(null);
 
     const startPlayback = async () => {
         const body: PlaybackStartRequest = {
@@ -26,7 +26,7 @@ const Playback = () => {
                 }
             }
         }
-        return backendClient.post<any, PlaybackStartRequest>(
+        return backendClient.post<PlaybackUpdateResponse, PlaybackStartRequest>(
             '/v1/playback/play/auto',
             null,
             body
@@ -34,42 +34,43 @@ const Playback = () => {
     }
 
     useEffect(() => {
-        if (playbackStatus === '') {
-            startPlayback().then(_ => {
-                setPlaybackStatus('PLAYING')
+        if (playbackStatus === null) {
+            startPlayback().then(data => {
+                setPlaybackStatus(data.playbackState)
             })
         }
     }, [])
 
     const pause = () => {
-        backendClient.post<any, null>('/v1/playback/pause').then(_ => {
-            setPlaybackStatus('PAUSED')
+        backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/pause').then(data => {
+            setPlaybackStatus(data.playbackState)
         })
     }
     const resume = () => {
-        backendClient.post<any, null>('/v1/playback/resume').then(_ => {
-            setPlaybackStatus('PLAYING')
+        backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/resume').then(data => {
+            setPlaybackStatus(data.playbackState)
         })
     }
     const next = () => {
-        backendClient.post<any, null>('/v1/playback/next').then(_ => {
-            setPlaybackStatus('PLAYING')
+        backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/next').then(data => {
+            setPlaybackStatus(data.playbackState)
         })
     }
     const stop = () => {
-        backendClient.post<any, null>('/v1/playback/stop').then(_ => {
-            setPlaybackStatus('STOPPED')
+        backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/stop').then(data => {
+            setPlaybackStatus(data.playbackState)
         })
     }
 
     let navigate = useNavigate()
 
-    let pauseResumeButton
-    if (playbackStatus === 'PLAYING') {
-        pauseResumeButton = <Button className={styles.PlaybackPlanButton} variant="contained" onClick={pause}>Pause</Button>
-    } else {
-        pauseResumeButton = <Button className={styles.PlaybackPlanButton} variant="contained" onClick={resume}>Resume</Button>
-    }
+    const pauseResumeButton = useMemo(() => {
+        if (playbackStatus === PlaybackState.PLAYING) {
+            return <Button className={styles.PlaybackPlanButton} variant="contained" onClick={pause}>Pause</Button>
+        } else {
+            return <Button className={styles.PlaybackPlanButton} variant="contained" onClick={resume}>Resume</Button>
+        }
+    }, [playbackStatus])
 
     return (
         <div className={styles.PlaybackPlan}>

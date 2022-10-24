@@ -10,15 +10,7 @@ export const SimpleButton: React.FC<{
     onClick
 }) => {
     return (
-        <Button sx={{
-            backgroundColor: customTheme.custom.palette.primary.main,
-            "&:hover": {
-                backgroundColor: "#8600bf"
-            },
-            "&:active": {
-                backgroundColor: customTheme.custom.palette.primary.main
-            }
-        }} variant="contained" onClick={onClick}>
+        <Button variant="contained" onClick={onClick}>
             {text}
         </Button>
     )

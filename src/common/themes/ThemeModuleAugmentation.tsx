@@ -23,6 +23,20 @@ declare module '@mui/material/styles' {
 }
 
 export const customTheme = createTheme({
+    palette: {
+        background: {
+            default: '#211825'
+        },
+        primary: {
+            main: '#b300ff'
+        },
+        secondary: {
+            main: '#ff5678'
+        },
+        text: {
+            primary: '#e0e0e0'
+        }
+    },
     custom: {
         palette: {
             primary: {
