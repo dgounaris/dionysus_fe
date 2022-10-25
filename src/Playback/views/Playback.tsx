@@ -4,6 +4,10 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {PlaybackStartRequest} from "../models/PlaybackStartRequest";
 import {backendClient} from "../../common/clients/http/BackendClient";
 import {PlaybackState, PlaybackUpdateResponse} from "../models/PlaybackUpdateResponse";
+import StopIcon from '@mui/icons-material/Stop';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 const Playback = () => {
     const location = useLocation()
@@ -65,9 +69,13 @@ const Playback = () => {
 
     const pauseResumeButton = useMemo(() => {
         if (playbackStatus === PlaybackState.PLAYING) {
-            return <Button variant="contained" onClick={pause}>Pause</Button>
+            return <Button variant="contained" onClick={pause}>
+                <PauseIcon />
+            </Button>
         } else {
-            return <Button variant="contained" onClick={resume}>Resume</Button>
+            return <Button variant="contained" onClick={resume}>
+                <PlayArrowIcon />
+            </Button>
         }
     }, [playbackStatus])
 
@@ -83,13 +91,17 @@ const Playback = () => {
             <Box sx={{ margin: '1.5rem' }}>
                 <Grid container justifyContent='center' spacing={1}>
                     <Grid item lg={1} md={4} xs={12}>
+                        <Button variant="contained" onClick={stop}>
+                            <StopIcon />
+                        </Button>
+                    </Grid>
+                    <Grid item lg={1} md={4} xs={12}>
                         {pauseResumeButton}
                     </Grid>
                     <Grid item lg={1} md={4} xs={12}>
-                        <Button variant="contained" onClick={next}>Next</Button>
-                    </Grid>
-                    <Grid item lg={1} md={4} xs={12}>
-                        <Button variant="contained" onClick={stop}>Stop</Button>
+                        <Button variant="contained" onClick={next}>
+                            <SkipNextIcon />
+                        </Button>
                     </Grid>
                 </Grid>
             </Box>
