@@ -1,6 +1,5 @@
-import {Box, Button, Container, Grid, ListItem, TextField, Typography} from "@mui/material";
+import {Container, Grid, TextField} from "@mui/material";
 import React from "react";
-import styles from '../views/PlaybackPlan.module.css';
 
 export const PlaybackPlanSubmitOptionsBar: React.FC<{
     onFadeMillisecondsChange: (number) => void,
@@ -13,10 +12,10 @@ export const PlaybackPlanSubmitOptionsBar: React.FC<{
 }) => {
     return (
         <Container maxWidth={false}>
-            <Grid container>
+            <Grid container justifyContent='center' spacing={2}>
                 <Grid item lg={2} md={6} xs={12}>
                     <TextField
-                        className={styles.PlaybackPlanTextField}
+                        sx={{ backgroundColor: '#0F0F0F' }}
                         id="fade-milliseconds"
                         label="Total fade duration (milliseconds)"
                         type="number"
@@ -34,7 +33,7 @@ export const PlaybackPlanSubmitOptionsBar: React.FC<{
                 </Grid>
                 <Grid item lg={2} md={6} xs={12}>
                     <TextField
-                        className={styles.PlaybackPlanTextField}
+                        sx={{ backgroundColor: '#0F0F0F' }}
                         id="volume-change-interval"
                         label="Fade step interval (milliseconds)"
                         type="number"
@@ -52,7 +51,7 @@ export const PlaybackPlanSubmitOptionsBar: React.FC<{
                 </Grid>
                 <Grid item lg={2} md={6} xs={12}>
                     <TextField
-                        className={styles.PlaybackPlanTextField}
+                        sx={{ backgroundColor: '#0F0F0F' }}
                         id="volume-total-reduction"
                         label="Fade total reduction %"
                         type="number"

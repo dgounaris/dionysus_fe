@@ -1,4 +1,3 @@
-import styles from "./SongSelection.module.css";
 import {useEffect, useState} from "react";
 import { SelectChangeEvent } from '@mui/material/Select';
 import { useNavigate } from "react-router-dom";
@@ -6,6 +5,7 @@ import React from 'react';
 import {PlaylistList} from "../components/PlaylistList";
 import {PlaylistSubmitButton} from "../components/PlaylistSubmitButton";
 import {backendClient} from "../../common/clients/http/BackendClient";
+import {Box, Typography} from "@mui/material";
 
 const SongSelection = () => {
     const [myPlaylists, setMyPlaylists] = useState([]);
@@ -31,13 +31,22 @@ const SongSelection = () => {
     }
 
     return (
-        <div className={styles.SongSelectionBody}>
-            <p>
+        <Box sx={{
+            textAlign: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            display: 'flex',
+            justifyContent: 'center'
+        }}>
+            <Typography fontSize='1.8rem'>
                 Playlist selection for playback
-            </p>
-            <PlaylistList selectedPlaylist={selectedPlaylist} onChangeSelected={selectPlaylist} myPlaylists={myPlaylists} />
+            </Typography>
+            <Box margin='2rem'>
+                <PlaylistList selectedPlaylist={selectedPlaylist} onChangeSelected={selectPlaylist} myPlaylists={myPlaylists} />
+            </Box>
             <PlaylistSubmitButton onClick={submitPlaylist} disabled={myPlaylistsLoading} />
-        </div>
+        </Box>
     );
 }
 

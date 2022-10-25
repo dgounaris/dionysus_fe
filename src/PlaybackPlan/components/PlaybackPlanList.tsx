@@ -2,8 +2,7 @@ import React from "react";
 import {TrackDetails, TrackSection} from "../models/TrackDetails";
 import {PlaybackPlanListItem} from "./PlaybackPlanListItem";
 import {Grid, List} from "@mui/material";
-import {PreviewPlan, TrackSelection} from "../models/PreviewPlan";
-import {AsyncState} from "react-use/lib/useAsyncFn";
+import {TrackSelection} from "../models/PreviewPlan";
 import {LoadingBox} from "../../common/components/LoadingBox";
 
 export const PlaybackPlanList: React.FC<{
@@ -18,7 +17,7 @@ export const PlaybackPlanList: React.FC<{
     if (isLoading) {
         return (
             <Grid item xs={12}>
-                <LoadingBox textColor="white" />
+                <LoadingBox />
             </Grid>
         )
     }

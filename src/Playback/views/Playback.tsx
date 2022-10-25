@@ -1,6 +1,5 @@
-import styles from './Playback.module.css';
 import React, {useEffect, useMemo, useState} from "react";
-import {Button} from "@mui/material";
+import {Box, Button, Grid, Typography} from "@mui/material";
 import {useLocation, useNavigate} from "react-router-dom";
 import {PlaybackStartRequest} from "../models/PlaybackStartRequest";
 import {backendClient} from "../../common/clients/http/BackendClient";
@@ -66,25 +65,33 @@ const Playback = () => {
 
     const pauseResumeButton = useMemo(() => {
         if (playbackStatus === PlaybackState.PLAYING) {
-            return <Button className={styles.PlaybackPlanButton} variant="contained" onClick={pause}>Pause</Button>
+            return <Button variant="contained" onClick={pause}>Pause</Button>
         } else {
-            return <Button className={styles.PlaybackPlanButton} variant="contained" onClick={resume}>Resume</Button>
+            return <Button variant="contained" onClick={resume}>Resume</Button>
         }
     }, [playbackStatus])
 
     return (
-        <div className={styles.PlaybackPlan}>
-            <header className={styles.PlaybackPlanHeader}>
-                <p>
-                    Current status: {playbackStatus}
-                </p>
-                <div>
-                    {pauseResumeButton}
-                    <Button className={styles.PlaybackPlanButton} variant="contained" onClick={next}>Next</Button>
-                    <Button className={styles.PlaybackPlanButton} variant="contained" onClick={stop}>Stop</Button>
-                </div>
-            </header>
-        </div>
+        <Box sx={{
+            textAlign: 'center'
+        }}>
+            <Typography fontSize='1.5rem'>
+                Current status: {playbackStatus}
+            </Typography>
+            <Box sx={{ margin: '1.5rem' }}>
+                <Grid container justifyContent='center' spacing={1}>
+                    <Grid item lg={1} md={4} xs={12}>
+                        {pauseResumeButton}
+                    </Grid>
+                    <Grid item lg={1} md={4} xs={12}>
+                        <Button variant="contained" onClick={next}>Next</Button>
+                    </Grid>
+                    <Grid item lg={1} md={4} xs={12}>
+                        <Button variant="contained" onClick={stop}>Stop</Button>
+                    </Grid>
+                </Grid>
+            </Box>
+        </Box>
     );
 }
 

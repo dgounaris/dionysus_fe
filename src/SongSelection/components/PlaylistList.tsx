@@ -1,7 +1,7 @@
-import styles from "../views/SongSelection.module.css";
 import {MenuItem, Select} from "@mui/material";
 import React from "react";
 import {SelectChangeEvent} from "@mui/material/Select";
+import {customTheme} from "../../common/themes/ThemeModuleAugmentation";
 
 export const PlaylistList: React.FC<{
     selectedPlaylist: string,
@@ -13,10 +13,14 @@ export const PlaylistList: React.FC<{
   myPlaylists
 }) => {
     return (
-        <Select className={styles.SongSelectionPlaylistSelect} label="Select your playlist" value={selectedPlaylist} onChange={onChangeSelected}>
+        <Select sx={{
+            backgroundColor: customTheme.palette.primary.main
+        }} label="Select your playlist" value={selectedPlaylist} onChange={onChangeSelected}>
             {myPlaylists.map(value =>
                 (
-                    <MenuItem key={value} value={value}>{value}</MenuItem>
+                    <MenuItem key={value} value={value}>
+                        {value}
+                    </MenuItem>
                 )
             )}
         </Select>

@@ -1,4 +1,3 @@
-import styles from './PlaybackPlan.module.css';
 import {useEffect, useState} from "react";
 import {Box, Button, Grid, Typography} from "@mui/material";
 import { SelectChangeEvent } from '@mui/material/Select';
@@ -126,14 +125,20 @@ const PlaybackPlan = () => {
     }
 
     return (
-        <div className={styles.PlaybackPlan}>
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <Typography color="white">
-                        Playback Preview
-                    </Typography>
+        <Box sx={{
+            textAlign: 'center'
+        }}>
+            <Box sx={{
+                margin: '2rem'
+            }}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <Typography fontSize='1.2rem'>
+                            Playback Preview
+                        </Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </Box>
             <PlaybackPlanOptionsBar
                 refreshEnabled={!loadingPreview}
                 onMinimumDurationChange={updateMinimumSelectionDuration}
@@ -141,21 +146,23 @@ const PlaybackPlan = () => {
                 onReloadPreview={onRefreshPreviewClick}
             />
             <Grid item xs={12}>
-                <Typography color="white">
+                <Typography fontSize='1rem'>
                     The following tracks will be played in this order:
                 </Typography>
             </Grid>
             <PlaybackPlanList playbackSelections={previewPlan?.selections ?? []} playbackTracks={previewPlan?.tracks ?? []} isLoading={loadingPreview} />
-            <PlaybackDeviceSelect playbackDevices={playbackDevices} selectedPlaybackDevice={selectedPlaybackDevice} onChangeSelected={selectPlaybackDevice} />
+            <Box sx={{ margin: '2rem' }}>
+                <PlaybackDeviceSelect playbackDevices={playbackDevices} selectedPlaybackDevice={selectedPlaybackDevice} onChangeSelected={selectPlaybackDevice} />
+            </Box>
             <PlaybackPlanSubmitOptionsBar
                 onFadeMillisecondsChange={onFadeMillisecondsChange}
                 onVolumeChangeIntervalChange={onVolumeChangeIntervalChange}
                 onVolumeTotalReductionChange={onVolumeTotalReductionChange}
             />
-            <Box>
-                <Button className={styles.PlaybackPlanButton} variant="contained" onClick={startPlayback}>Play</Button>
+            <Box sx={{ margin: '2rem' }}>
+                <Button variant="contained" onClick={startPlayback} disabled={loadingPreview}>Play</Button>
             </Box>
-        </div>
+        </Box>
     );
 }
 

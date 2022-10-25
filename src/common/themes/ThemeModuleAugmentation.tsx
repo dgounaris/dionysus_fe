@@ -24,14 +24,18 @@ declare module '@mui/material/styles' {
 
 export const customTheme = createTheme({
     palette: {
+        action: {
+            disabledBackground: '#e6b9fe',
+            disabled: '#777777'
+        },
         background: {
             default: '#211825'
         },
         primary: {
-            main: '#b300ff'
+            main: '#B300FF'
         },
         secondary: {
-            main: '#ff5678'
+            main: '#3350ff'
         },
         text: {
             primary: '#e0e0e0'
