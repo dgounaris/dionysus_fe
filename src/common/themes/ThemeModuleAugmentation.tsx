@@ -38,7 +38,8 @@ export const customTheme = createTheme({
             main: '#3350ff'
         },
         text: {
-            primary: '#e0e0e0'
+            primary: '#e0e0e0',
+            disabled: '#777777'
         }
     },
     custom: {

@@ -75,9 +75,11 @@ const Playback = () => {
         <Box sx={{
             textAlign: 'center'
         }}>
-            <Typography fontSize='1.5rem'>
-                Current status: {playbackStatus}
-            </Typography>
+            <Box sx={{ margin: '2rem' }}>
+                <Typography fontSize='1.5rem'>
+                    Current status: {playbackStatus}
+                </Typography>
+            </Box>
             <Box sx={{ margin: '1.5rem' }}>
                 <Grid container justifyContent='center' spacing={1}>
                     <Grid item lg={1} md={4} xs={12}>

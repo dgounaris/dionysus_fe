@@ -1,5 +1,4 @@
-import {AppBar, Box, Toolbar, Typography} from "@mui/material";
-import {Link} from "react-router-dom";
+import {AppBar, Box, Link, Toolbar, Typography} from "@mui/material";
 import React from "react";
 import {customTheme} from "../themes/ThemeModuleAugmentation";
 
@@ -11,11 +10,16 @@ export const NavigationBar = () => {
         }}>
             <AppBar position="static">
                 <Toolbar>
-                    <Link to="/">
-                        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                    <Box flexGrow={1}>
+                        <Link href="/" color={customTheme.palette.text.primary} variant="h6" underline="none">
                             Dionysus
-                        </Typography>
-                    </Link>
+                        </Link>
+                    </Box>
+                    <Box display="flex" justifyContent="flex-end">
+                        <Link component="button" onClick={() => {}} color={customTheme.palette.text.primary} variant="body1" underline="none">
+                            Logout
+                        </Link>
+                    </Box>
                 </Toolbar>
             </AppBar>
         </Box>
