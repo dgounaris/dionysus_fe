@@ -1,8 +1,12 @@
 import {AppBar, Box, Link, Toolbar, Typography} from "@mui/material";
 import React from "react";
 import {customTheme} from "../themes/ThemeModuleAugmentation";
+import {useAuth} from "../../Auth/hooks/AuthHooks";
+import {NavigationBarRightSide} from "./NavigationBarRightSide";
 
 export const NavigationBar = () => {
+    const auth = useAuth()
+
     return (
         <Box sx={{
             display: 'flex',
@@ -15,11 +19,7 @@ export const NavigationBar = () => {
                             Dionysus
                         </Link>
                     </Box>
-                    <Box display="flex" justifyContent="flex-end">
-                        <Link component="button" onClick={() => {}} color={customTheme.palette.text.primary} variant="body1" underline="none">
-                            Logout
-                        </Link>
-                    </Box>
+                    <NavigationBarRightSide userLoggedIn={auth.userLoggedIn} onLogoutClick={auth.logout} />
                 </Toolbar>
             </AppBar>
         </Box>

@@ -35,7 +35,7 @@ export const customTheme = createTheme({
             main: '#B300FF'
         },
         secondary: {
-            main: '#3350ff'
+            main: '#A387AF'
         },
         text: {
             primary: '#e0e0e0',

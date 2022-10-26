@@ -14,6 +14,7 @@ import {backendClient} from "../../common/clients/http/BackendClient";
 import {SubmitPlanRequest} from "../models/SubmitPlanRequest";
 import {FadeDetails} from "../models/FadeDetails";
 import {PlaybackPlanSubmitOptionsBar} from "../components/PlaybackPlanSubmitOptionsBar";
+import {customTheme} from "../../common/themes/ThemeModuleAugmentation";
 
 
 const PlaybackPlan = () => {
@@ -151,16 +152,28 @@ const PlaybackPlan = () => {
                 </Typography>
             </Grid>
             <PlaybackPlanList playbackSelections={previewPlan?.selections ?? []} playbackTracks={previewPlan?.tracks ?? []} isLoading={loadingPreview} />
-            <Box sx={{ margin: '2rem' }}>
-                <PlaybackDeviceSelect playbackDevices={playbackDevices} selectedPlaybackDevice={selectedPlaybackDevice} onChangeSelected={selectPlaybackDevice} />
-            </Box>
-            <PlaybackPlanSubmitOptionsBar
-                onFadeMillisecondsChange={onFadeMillisecondsChange}
-                onVolumeChangeIntervalChange={onVolumeChangeIntervalChange}
-                onVolumeTotalReductionChange={onVolumeTotalReductionChange}
-            />
-            <Box sx={{ margin: '2rem' }}>
-                <Button variant="contained" onClick={startPlayback} disabled={loadingPreview}>Play</Button>
+            <Box position='sticky' bottom={0} sx={{
+                background: `linear-gradient(to bottom, #21182566, ${customTheme.palette.background.default})`,
+                paddingTop: '2rem',
+                paddingBottom: '1rem'
+            }}>
+                <Grid container>
+                    <PlaybackPlanSubmitOptionsBar
+                        onFadeMillisecondsChange={onFadeMillisecondsChange}
+                        onVolumeChangeIntervalChange={onVolumeChangeIntervalChange}
+                        onVolumeTotalReductionChange={onVolumeTotalReductionChange}
+                    />
+                    <Grid item lg={2} md={12} xs={12} justifyContent='left'>
+                        <Box sx={{ margin: '1rem' }}>
+                            <PlaybackDeviceSelect playbackDevices={playbackDevices} selectedPlaybackDevice={selectedPlaybackDevice} onChangeSelected={selectPlaybackDevice} />
+                        </Box>
+                    </Grid>
+                    <Grid item lg={2} md={12} xs={12}>
+                        <Box sx={{ margin: '1rem' }}>
+                            <Button variant="contained" size='large' onClick={startPlayback} disabled={loadingPreview}>Play</Button>
+                        </Box>
+                    </Grid>
+                </Grid>
             </Box>
         </Box>
     );

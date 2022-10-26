@@ -1,6 +1,5 @@
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Home from './Home/views/Home';
-import './App.css';
 import SongSelection from "./SongSelection/views/SongSelection";
 import PlaybackPlan from "./PlaybackPlan/views/PlaybackPlan";
 import Playback from "./Playback/views/Playback";

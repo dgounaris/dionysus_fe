@@ -1,25 +1,34 @@
 import {useLocalStorage} from "react-use";
-import {createContext, useContext, useMemo} from "react";
+import {createContext, useContext, useEffect, useMemo} from "react";
 import React from "react";
+import {backendClient} from "../../common/clients/http/BackendClient";
 
 type AuthContextType = {
     userLoggedIn: boolean,
-    login: () => void,
     logout: () => void
 }
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({children}) => {
     const [userLoggedIn, setUserLoggedIn] = useLocalStorage("dionysus_userFlag", false)
-    const login = async () => {
-        setUserLoggedIn(true)
-    }
+
     const logout = async () => {
-        setUserLoggedIn(false)
+        backendClient.post<any, any>("/v1/logout")
+            .then(_ =>
+                setUserLoggedIn(false)
+            )
     }
 
+    useEffect(() => {
+        backendClient.get<any>("/v1/login/status").then(_ =>
+                setUserLoggedIn(true)
+            ).catch(_ =>
+                setUserLoggedIn(false)
+            )
+        }, [])
+
     const value = useMemo(() => ({
-        userLoggedIn, login, logout
+        userLoggedIn, logout
     }), [userLoggedIn])
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
