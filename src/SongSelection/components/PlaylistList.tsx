@@ -15,10 +15,18 @@ export const PlaylistList: React.FC<{
     return (
         <Select sx={{
             backgroundColor: customTheme.palette.primary.main
-        }} label="Select your playlist" value={selectedPlaylist} onChange={onChangeSelected}>
+        }} label="Select your playlist" value={selectedPlaylist} className="foo" onChange={onChangeSelected}>
             {myPlaylists.map(value =>
                 (
-                    <MenuItem key={value} value={value}>
+                    <MenuItem sx={{
+                        "&.MuiMenuItem-root": {
+                            color: customTheme.palette.getContrastText('#fff')
+                        },
+                        "&.Mui-selected": {
+                            backgroundColor: customTheme.palette.primary.dark,
+                            color: customTheme.palette.getContrastText(customTheme.palette.primary.dark)
+                        }
+                    }} key={value} value={value}>
                         {value}
                     </MenuItem>
                 )

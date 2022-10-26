@@ -20,7 +20,17 @@ export const PlaybackDeviceSelect: React.FC<{
         label="Select your playback device" value={selectedPlaybackDevice} onChange={onChangeSelected}>
             {playbackDevices.map(value =>
                 (
-                    <MenuItem key={value.name} value={value.name}>{value.name}</MenuItem>
+                    <MenuItem sx={{
+                        "&.MuiMenuItem-root": {
+                            color: customTheme.palette.getContrastText('#fff')
+                        },
+                        "&.Mui-selected": {
+                            backgroundColor: customTheme.palette.primary.dark,
+                            color: customTheme.palette.getContrastText(customTheme.palette.primary.dark)
+                        }
+                    }} key={value.name} value={value.name}>
+                        {value.name}
+                    </MenuItem>
                 )
             )}
         </Select>
