@@ -8,6 +8,7 @@ import StopIcon from '@mui/icons-material/Stop';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import SpotifyPlayer from 'react-spotify-web-playback';
 
 const Playback = () => {
     const location = useLocation()
@@ -105,6 +106,11 @@ const Playback = () => {
                     </Grid>
                 </Grid>
             </Box>
+            {
+                // see https://www.npmjs.com/package/react-spotify-web-playback
+                // and https://github.com/gilbarbara/react-spotify-web-playback
+                //<SpotifyPlayer token=""></SpotifyPlayer>
+            }
         </Box>
     );
 }
