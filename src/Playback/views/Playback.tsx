@@ -8,10 +8,7 @@ import StopIcon from '@mui/icons-material/Stop';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SpotifyPlayer from 'react-spotify-web-playback';
 import {PlaybackClientResponse} from "../models/PlaybackClientResponse";
-import {customTheme} from "../../common/themes/ThemeModuleAugmentation";
-import {useBeforeUnload} from "react-use";
 
 const Playback = () => {
     const location = useLocation()
@@ -51,16 +48,16 @@ const Playback = () => {
         }
         window.addEventListener(
             'unload',
-            () => { backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/stop').then(_ => {
-                }
-            )}
+            onPageExit
         )
         return () => {
-            window.removeEventListener('unload', () => { backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/stop').then(_ => {
-                }
-            )})
+            window.removeEventListener('unload', onPageExit)
         }
     }, [])
+
+    const onPageExit = () => {
+        backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/stop').then(_ => {})
+    }
 
     const pause = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/pause').then(data => {
