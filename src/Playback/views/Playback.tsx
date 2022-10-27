@@ -9,15 +9,21 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SpotifyPlayer from 'react-spotify-web-playback';
+import {PlaybackClientResponse} from "../models/PlaybackClientResponse";
+import {customTheme} from "../../common/themes/ThemeModuleAugmentation";
+import {useBeforeUnload} from "react-use";
 
 const Playback = () => {
     const location = useLocation()
     const playbackDevice = location.state.playbackDevice
     const fadeDetails = location.state.fadeDetails
 
+    const [playbackToken, setPlaybackToken] = useState<string>('');
     const [playbackStatus, setPlaybackStatus] = useState<PlaybackState | null>(null);
 
     const startPlayback = async () => {
+        const playbackDeviceDetails = await backendClient.get<PlaybackClientResponse>("/v1/playback/client")
+        setPlaybackToken(playbackDeviceDetails.token)
         const body: PlaybackStartRequest = {
             playbackDetails: {
                 selectedDeviceId: playbackDevice.id,
@@ -42,6 +48,17 @@ const Playback = () => {
             startPlayback().then(data => {
                 setPlaybackStatus(data.playbackState)
             })
+        }
+        window.addEventListener(
+            'unload',
+            () => { backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/stop').then(_ => {
+                }
+            )}
+        )
+        return () => {
+            window.removeEventListener('unload', () => { backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/stop').then(_ => {
+                }
+            )})
         }
     }, [])
 
@@ -106,11 +123,25 @@ const Playback = () => {
                     </Grid>
                 </Grid>
             </Box>
-            {
-                // see https://www.npmjs.com/package/react-spotify-web-playback
-                // and https://github.com/gilbarbara/react-spotify-web-playback
-                //<SpotifyPlayer token=""></SpotifyPlayer>
-            }
+            <Box position='fixed' bottom={0} width='100%' hidden={false}>
+                {
+                    /*<SpotifyPlayer
+                        token={playbackToken}
+                        showSaveIcon={true}
+                        name="Dionysus"
+                        autoPlay={false}
+                        initialVolume={0.5}
+                        styles={{
+                            activeColor: customTheme.palette.primary.dark,
+                            bgColor: customTheme.palette.background.default,
+                            color: customTheme.palette.primary.main,
+                            sliderColor: customTheme.palette.primary.light,
+                            trackArtistColor: '#ccc',
+                            trackNameColor: '#fff',
+                        }}
+                    />*/
+                }
+            </Box>
         </Box>
     );
 }
