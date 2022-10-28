@@ -15,6 +15,9 @@ import {SubmitPlanRequest} from "../models/SubmitPlanRequest";
 import {FadeDetails} from "../models/FadeDetails";
 import {PlaybackPlanSubmitOptionsBar} from "../components/PlaybackPlanSubmitOptionsBar";
 import {customTheme} from "../../common/themes/ThemeModuleAugmentation";
+import {PlaybackClientResponse} from "../../Playback/models/PlaybackClientResponse";
+import {PlaybackStartRequest} from "../../Playback/models/PlaybackStartRequest";
+import {PlaybackUpdateResponse} from "../../Playback/models/PlaybackUpdateResponse";
 
 
 const PlaybackPlan = () => {
@@ -119,10 +122,24 @@ const PlaybackPlan = () => {
             { selections: previewPlan.selections }
         )
         const device = playbackDevices.find(it => it.name === selectedPlaybackDevice);
-        navigate("/playback/active", { state: {
-            playbackDevice: device,
-            fadeDetails: fadeDetails
-        } })
+        const body: PlaybackStartRequest = {
+            playbackDetails: {
+                selectedDeviceId: device.id,
+                selectedDeviceType: device.type,
+                selectedDeviceVolumePercent: device.volumePercent,
+                fadeDetails: {
+                    fadeMilliseconds: fadeDetails.fadeMilliseconds,
+                    volumeChangeIntervalMilliseconds: fadeDetails.volumeChangeIntervalMilliseconds,
+                    volumeTotalReduction: fadeDetails.volumeTotalReduction
+                }
+            }
+        }
+        await backendClient.post<PlaybackUpdateResponse, PlaybackStartRequest>(
+            '/v1/playback/play/auto',
+            null,
+            body
+        )
+        navigate("/playback/active")
     }
 
     return (
@@ -134,7 +151,7 @@ const PlaybackPlan = () => {
             }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Typography fontSize='1.2rem'>
+                        <Typography variant='h5'>
                             Playback Preview
                         </Typography>
                     </Grid>
@@ -147,7 +164,7 @@ const PlaybackPlan = () => {
                 onReloadPreview={onRefreshPreviewClick}
             />
             <Grid item xs={12}>
-                <Typography fontSize='1rem'>
+                <Typography variant='h6'>
                     The following tracks will be played in this order:
                 </Typography>
             </Grid>

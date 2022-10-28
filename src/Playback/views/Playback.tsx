@@ -8,44 +8,9 @@ import StopIcon from '@mui/icons-material/Stop';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import {PlaybackClientResponse} from "../models/PlaybackClientResponse";
 
 const Playback = () => {
-    const location = useLocation()
-    const playbackDevice = location.state.playbackDevice
-    const fadeDetails = location.state.fadeDetails
-
-    const [playbackToken, setPlaybackToken] = useState<string>('');
-    const [playbackStatus, setPlaybackStatus] = useState<PlaybackState | null>(null);
-
-    const startPlayback = async () => {
-        const playbackDeviceDetails = await backendClient.get<PlaybackClientResponse>("/v1/playback/client")
-        setPlaybackToken(playbackDeviceDetails.token)
-        const body: PlaybackStartRequest = {
-            playbackDetails: {
-                selectedDeviceId: playbackDevice.id,
-                selectedDeviceType: playbackDevice.type,
-                selectedDeviceVolumePercent: playbackDevice.volumePercent,
-                fadeDetails: {
-                    fadeMilliseconds: fadeDetails.fadeMilliseconds,
-                    volumeChangeIntervalMilliseconds: fadeDetails.volumeChangeIntervalMilliseconds,
-                    volumeTotalReduction: fadeDetails.volumeTotalReduction
-                }
-            }
-        }
-        return backendClient.post<PlaybackUpdateResponse, PlaybackStartRequest>(
-            '/v1/playback/play/auto',
-            null,
-            body
-        )
-    }
-
     useEffect(() => {
-        if (playbackStatus === null) {
-            startPlayback().then(data => {
-                setPlaybackStatus(data.playbackState)
-            })
-        }
         window.addEventListener(
             'unload',
             onPageExit
@@ -61,29 +26,25 @@ const Playback = () => {
 
     const pause = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/pause').then(data => {
-            setPlaybackStatus(data.playbackState)
         })
     }
     const resume = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/resume').then(data => {
-            setPlaybackStatus(data.playbackState)
         })
     }
     const next = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/next').then(data => {
-            setPlaybackStatus(data.playbackState)
         })
     }
     const stop = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/stop').then(data => {
-            setPlaybackStatus(data.playbackState)
         })
     }
 
     let navigate = useNavigate()
 
     const pauseResumeButton = useMemo(() => {
-        if (playbackStatus === PlaybackState.PLAYING) {
+        if (PlaybackState.PLAYING === PlaybackState.PLAYING) {
             return <Button variant="contained" onClick={pause}>
                 <PauseIcon />
             </Button>
@@ -92,7 +53,7 @@ const Playback = () => {
                 <PlayArrowIcon />
             </Button>
         }
-    }, [playbackStatus])
+    }, [])
 
     return (
         <Box sx={{
@@ -100,7 +61,7 @@ const Playback = () => {
         }}>
             <Box sx={{ margin: '2rem' }}>
                 <Typography fontSize='1.5rem'>
-                    Current status: {playbackStatus}
+                    Current status: todo...
                 </Typography>
             </Box>
             <Box sx={{ margin: '1.5rem' }}>

@@ -20,7 +20,7 @@ export const PlaybackPlanOptionsBar: React.FC<{
                         <TextField
                             sx={{ backgroundColor: '#0F0F0F' }}
                             id="minimum-duration"
-                            label="Minimum duration"
+                            label="Minimum duration (per track)"
                             type="number"
                             InputProps={{
                                 style: { color: '#fff' }
@@ -38,7 +38,7 @@ export const PlaybackPlanOptionsBar: React.FC<{
                         <TextField
                             sx={{ backgroundColor: '#0F0F0F' }}
                             id="maximum-duration"
-                            label="Maximum duration"
+                            label="Maximum duration (per track)"
                             type="number"
                             InputProps={{
                                 style: { color: '#fff' }
