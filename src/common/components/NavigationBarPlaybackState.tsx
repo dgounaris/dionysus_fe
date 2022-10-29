@@ -1,8 +1,8 @@
 import React from "react";
 import {Box, Button, Card} from "@mui/material";
 import {customTheme} from "../themes/ThemeModuleAugmentation";
-import {PlaybackState} from "./NavigationBar";
 import {useNavigate} from "react-router-dom";
+import {PlaybackState} from "../models/PlaybackState";
 
 export const NavigationBarPlaybackState: React.FC<{
     userLoggedIn: boolean,

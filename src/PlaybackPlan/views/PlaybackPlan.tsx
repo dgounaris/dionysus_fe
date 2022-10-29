@@ -15,7 +15,6 @@ import {SubmitPlanRequest} from "../models/SubmitPlanRequest";
 import {FadeDetails} from "../models/FadeDetails";
 import {PlaybackPlanSubmitOptionsBar} from "../components/PlaybackPlanSubmitOptionsBar";
 import {customTheme} from "../../common/themes/ThemeModuleAugmentation";
-import {PlaybackClientResponse} from "../../Playback/models/PlaybackClientResponse";
 import {PlaybackStartRequest} from "../../Playback/models/PlaybackStartRequest";
 import {PlaybackUpdateResponse} from "../../Playback/models/PlaybackUpdateResponse";
 
@@ -40,6 +39,9 @@ const PlaybackPlan = () => {
         const playlistTracksData = await backendClient.get<Playlist>(
             '/v1/playlists/tracks', {playlistName: playlistName}
         )
+        if (!playlistTracksData) {
+            return null
+        }
         return await backendClient.post<PreviewPlan, PreviewPlanRequest>(
             '/v1/plan/preview',
             null,
@@ -54,8 +56,10 @@ const PlaybackPlan = () => {
     useEffect(() => {
         setLoadingPreview(true)
         createPreviewPlan().then(data => {
-            setPreviewPlan(data)
-            setLoadingPreview(false)
+            if (data !== null) {
+                setPreviewPlan(data)
+                setLoadingPreview(false)
+            }
         })
     }, [
         refreshPreview
@@ -63,8 +67,13 @@ const PlaybackPlan = () => {
 
     useEffect(() => {
         backendClient.get<AvailableDevice[]>('/v1/playback/devices').then(data => {
-            setPlaybackDevices(data)
-            setSelectedPlaybackDevice(data[0].name ?? '')
+            if (!data) {
+                setPlaybackDevices([])
+                setSelectedPlaybackDevice('')
+            } else {
+                setPlaybackDevices(data)
+                setSelectedPlaybackDevice(data[0].name ?? '')
+            }
         })
     }, [])
 

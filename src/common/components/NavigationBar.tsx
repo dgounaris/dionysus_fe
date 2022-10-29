@@ -5,26 +5,12 @@ import {setToken, useAuth} from "../../Auth/hooks/AuthHooks";
 import {NavigationBarRightSide} from "./NavigationBarRightSide";
 import {backendClient} from "../clients/http/BackendClient";
 import {NavigationBarPlaybackState} from "./NavigationBarPlaybackState";
+import {PlaybackState, PlaybackStatusResponse} from "../models/PlaybackState";
+import {usePlaybackState} from "../hooks/PlaybackStateHooks";
 
 export const NavigationBar = () => {
     const auth = useAuth()
-    const [playbackState, setPlaybackState] = useState<PlaybackState>()
-
-    const refreshPlaybackState = () => {
-        backendClient.get<PlaybackStatusResponse>("/v1/state/playback").then(data => {
-            setPlaybackState(data.playbackState)
-        })
-    }
-
-    useEffect(() => {
-        const playbackStatusRefreshInterval = setInterval(() => {
-            if (auth.userLoggedIn) {
-                refreshPlaybackState()
-            }
-        }, 2000)
-
-        return () => { clearInterval(playbackStatusRefreshInterval) }
-    }, [auth.userLoggedIn, auth.userName, playbackState])
+    const playbackState = usePlaybackState()
 
     return (
         <Box sx={{
@@ -40,7 +26,7 @@ export const NavigationBar = () => {
                     </Box>
                     <NavigationBarPlaybackState
                         userLoggedIn={auth.userLoggedIn}
-                        playbackState={playbackState} />
+                        playbackState={playbackState.playbackState} />
                     <NavigationBarRightSide
                         userLoggedIn={auth.userLoggedIn}
                         userName={auth.userName}
@@ -49,14 +35,4 @@ export const NavigationBar = () => {
             </AppBar>
         </Box>
     );
-}
-
-export enum PlaybackState {
-    PLAYING = 'PLAYING',
-    PAUSED = 'PAUSED',
-    STOPPED = 'STOPPED'
-}
-
-type PlaybackStatusResponse = {
-    playbackState: PlaybackState
 }

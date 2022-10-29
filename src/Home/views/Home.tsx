@@ -12,7 +12,9 @@ const Home: React.FC = () => {
 
     const onLoginButtonClick = async () => {
         const response = await backendClient.get<LoginResponse>("/v1/login")
-        window.location.href=response.loginUrl
+        if (response) {
+            window.location.href = response.loginUrl
+        }
     }
     const onSongSelectionButtonClick = () => {
         navigate("/selection")

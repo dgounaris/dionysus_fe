@@ -16,7 +16,7 @@ export const PlaylistList: React.FC<{
         <Select sx={{
             backgroundColor: customTheme.palette.primary.main
         }} label="Select your playlist" value={selectedPlaylist} className="foo" onChange={onChangeSelected}>
-            {myPlaylists.map(value =>
+            {myPlaylists?.map(value =>
                 (
                     <MenuItem sx={{
                         "&.MuiMenuItem-root": {
@@ -30,7 +30,7 @@ export const PlaylistList: React.FC<{
                         {value}
                     </MenuItem>
                 )
-            )}
+            ) ?? []}
         </Select>
     )
 }

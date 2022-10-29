@@ -8,21 +8,10 @@ import StopIcon from '@mui/icons-material/Stop';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import {usePlaybackState} from "../../common/hooks/PlaybackStateHooks";
 
 const Playback = () => {
-    useEffect(() => {
-        window.addEventListener(
-            'unload',
-            onPageExit
-        )
-        return () => {
-            window.removeEventListener('unload', onPageExit)
-        }
-    }, [])
-
-    const onPageExit = () => {
-        backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/stop').then(_ => {})
-    }
+    const playbackState = usePlaybackState()
 
     const pause = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/pause').then(data => {
@@ -44,7 +33,7 @@ const Playback = () => {
     let navigate = useNavigate()
 
     const pauseResumeButton = useMemo(() => {
-        if (PlaybackState.PLAYING === PlaybackState.PLAYING) {
+        if (playbackState.playbackState === PlaybackState.PLAYING) {
             return <Button variant="contained" onClick={pause}>
                 <PauseIcon />
             </Button>
@@ -53,7 +42,7 @@ const Playback = () => {
                 <PlayArrowIcon />
             </Button>
         }
-    }, [])
+    }, [playbackState])
 
     return (
         <Box sx={{
@@ -61,7 +50,7 @@ const Playback = () => {
         }}>
             <Box sx={{ margin: '2rem' }}>
                 <Typography fontSize='1.5rem'>
-                    Current status: todo...
+                    Current status: {playbackState.playbackState}
                 </Typography>
             </Box>
             <Box sx={{ margin: '1.5rem' }}>

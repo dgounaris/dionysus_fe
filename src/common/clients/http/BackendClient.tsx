@@ -19,21 +19,34 @@ class BackendClient {
         !error.response && // if there is a response, it reached the server and not a network error
         error.code !== 'ECONNABORTED'; // check that it isn't a timeout
 
-    async get<T>(request: string, queryParams: any = null, additionalHeaders: any = null, useRefreshToken: boolean = false, additionalConfig: any = null): Promise<T> {
-        const { status, data } = await axios.get(`${BACKEND_BASE_URL}${request}`,
-            {
-                ...additionalConfig,
-                headers: {'Authorization': `Bearer ${useRefreshToken ? getRefreshToken() : getToken()}`, ...additionalHeaders},
-                params: queryParams
-            })
-        return data
+    defaultErrorHandling: (e) => void = (e) => {}
+
+    async get<T>(request: string, queryParams: any = null, additionalHeaders: any = null, useRefreshToken: boolean = false, additionalConfig: any = null, onError: (e: any) => void = this.defaultErrorHandling): Promise<T> {
+        try {
+            const {status, data} = await axios.get(`${BACKEND_BASE_URL}${request}`,
+                {
+                    ...additionalConfig,
+                    headers: {'Authorization': `Bearer ${useRefreshToken ? getRefreshToken() : getToken()}`, ...additionalHeaders},
+                    params: queryParams
+                })
+            return data
+        } catch (e) {
+            onError(e)
+        }
     }
 
-    async post<T, R>(request: string, queryParams: any = null, body: R | null = null, additionalHeaders: any = null, useRefreshToken: boolean = false): Promise<T> {
-        const { status, data } = await axios.post(`${BACKEND_BASE_URL}${request}`,
-            body,
-            {headers: {'Authorization': `Bearer ${useRefreshToken ? getRefreshToken() : getToken()}`, ...additionalHeaders}, params: queryParams})
-        return data
+    async post<T, R>(request: string, queryParams: any = null, body: R | null = null, additionalHeaders: any = null, useRefreshToken: boolean = false, onError: (e: any) => void = this.defaultErrorHandling): Promise<T> {
+        try {
+            const {status, data} = await axios.post(`${BACKEND_BASE_URL}${request}`,
+                body,
+                {
+                    headers: {'Authorization': `Bearer ${useRefreshToken ? getRefreshToken() : getToken()}`, ...additionalHeaders},
+                    params: queryParams
+                })
+            return data
+        } catch (e) {
+            onError(e)
+        }
     }
 }
 
