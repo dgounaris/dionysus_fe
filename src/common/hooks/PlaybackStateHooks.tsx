@@ -4,7 +4,8 @@ import {PlaybackState, PlaybackStatusResponse} from "../models/PlaybackState";
 import {useAuth} from "../../Auth/hooks/AuthHooks";
 
 type PlaybackStateContextType = {
-    playbackState: PlaybackState
+    playbackState: PlaybackState,
+    refreshPlaybackState: () => void
 }
 const PlaybackStateContext = createContext<PlaybackStateContextType | null>(null);
 
@@ -30,7 +31,7 @@ export const PlaybackStateProvider = ({children}) => {
     }, [auth.userLoggedIn, auth.userName, playbackState])
 
     const value = useMemo(() => ({
-        playbackState
+        playbackState, refreshPlaybackState
     }), [playbackState])
 
     return <PlaybackStateContext.Provider value={value}>{children}</PlaybackStateContext.Provider>;

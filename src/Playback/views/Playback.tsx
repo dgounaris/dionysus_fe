@@ -15,20 +15,29 @@ const Playback = () => {
 
     const pause = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/pause').then(data => {
+            playbackState.refreshPlaybackState()
         })
     }
     const resume = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/resume').then(data => {
+            playbackState.refreshPlaybackState()
         })
     }
     const next = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/next').then(data => {
+            playbackState.refreshPlaybackState()
         })
     }
     const stop = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/stop').then(data => {
+            playbackState.refreshPlaybackState()
         })
     }
+
+    useEffect(() => {
+        playbackState.refreshPlaybackState()
+
+    }, [])
 
     let navigate = useNavigate()
 
