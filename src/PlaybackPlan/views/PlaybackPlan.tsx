@@ -1,10 +1,9 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Box, Button, Grid, Typography} from "@mui/material";
-import { SelectChangeEvent } from '@mui/material/Select';
-import { useNavigate, useLocation } from "react-router-dom";
+import {SelectChangeEvent} from '@mui/material/Select';
+import {useLocation, useNavigate} from "react-router-dom";
 import {Playlist} from "../models/Playlist";
 import {PreviewPlan} from "../models/PreviewPlan";
-import React from 'react';
 import {PreviewPlanRequest, SelectionOptions} from "../models/PreviewPlanRequest";
 import {PlaybackPlanOptionsBar} from "../components/PlaybackPlanOptionsBar";
 import {PlaybackPlanList} from "../components/PlaybackPlanList";
@@ -17,6 +16,7 @@ import {PlaybackPlanSubmitOptionsBar} from "../components/PlaybackPlanSubmitOpti
 import {customTheme} from "../../common/themes/ThemeModuleAugmentation";
 import {PlaybackStartRequest} from "../../Playback/models/PlaybackStartRequest";
 import {PlaybackUpdateResponse} from "../../Playback/models/PlaybackUpdateResponse";
+import {OrderSelectionStrategy} from "../models/OrderSelectionStrategy";
 
 
 const PlaybackPlan = () => {
@@ -25,7 +25,7 @@ const PlaybackPlan = () => {
 
     const [previewPlan, setPreviewPlan] = useState<PreviewPlan | null>(null);
     const [selectionOptions, setSelectionOptions] = useState<SelectionOptions>(
-        { minimumSelectionDuration: 60, maximumSelectionDuration: 90 }
+        { minimumSelectionDuration: 60, maximumSelectionDuration: 90, orderSelectionStrategy: OrderSelectionStrategy.DEFAULT }
     );
     const [fadeDetails, setFadeDetails] = useState<FadeDetails>(
         { fadeMilliseconds: 50, volumeChangeIntervalMilliseconds: 10, volumeTotalReduction: 25 }
@@ -82,9 +82,18 @@ const PlaybackPlan = () => {
         setSelectedPlaybackDevice(event.target.value);
     };
 
+    const selectOrderSelectionStrategy = (event: SelectChangeEvent) => {
+        setSelectionOptions(
+            {
+                ...selectionOptions,
+                orderSelectionStrategy: OrderSelectionStrategy[event.target.value]
+            }
+        )
+    }
     const updateMinimumSelectionDuration = (newDuration: number) => {
         setSelectionOptions(
             {
+                ...selectionOptions,
                 minimumSelectionDuration: newDuration,
                 maximumSelectionDuration: selectionOptions.maximumSelectionDuration
             }
@@ -93,6 +102,7 @@ const PlaybackPlan = () => {
     const updateMaximumSelectionDuration = (newDuration: number) => {
         setSelectionOptions(
             {
+                ...selectionOptions,
                 minimumSelectionDuration: selectionOptions.minimumSelectionDuration,
                 maximumSelectionDuration: newDuration
             }
@@ -169,6 +179,9 @@ const PlaybackPlan = () => {
             </Box>
             <PlaybackPlanOptionsBar
                 refreshEnabled={!loadingPreview}
+                shuffleModes={Object.values(OrderSelectionStrategy)}
+                selectedShuffleMode={selectionOptions.orderSelectionStrategy}
+                onShuffleModeChange={selectOrderSelectionStrategy}
                 onMinimumDurationChange={updateMinimumSelectionDuration}
                 onMaximumDurationChange={updateMaximumSelectionDuration}
                 onReloadPreview={onRefreshPreviewClick}

@@ -1,3 +1,5 @@
+import {OrderSelectionStrategy} from "./OrderSelectionStrategy";
+
 export type PreviewPlanRequest = {
     tracks: Track[],
     selectionOptions: SelectionOptions
@@ -10,5 +12,6 @@ export type Track = {
 
 export type SelectionOptions = {
     minimumSelectionDuration: number,
-    maximumSelectionDuration: number
+    maximumSelectionDuration: number,
+    orderSelectionStrategy: OrderSelectionStrategy
 }

@@ -15,7 +15,7 @@ export const PlaylistList: React.FC<{
     return (
         <Select sx={{
             backgroundColor: customTheme.palette.primary.main
-        }} label="Select your playlist" value={selectedPlaylist} className="foo" onChange={onChangeSelected}>
+        }} label="Select your playlist" value={selectedPlaylist} onChange={onChangeSelected}>
             {myPlaylists?.map(value =>
                 (
                     <MenuItem sx={{
