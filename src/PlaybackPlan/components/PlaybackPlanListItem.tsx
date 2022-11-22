@@ -3,18 +3,21 @@ import React from "react";
 import {TrackSection, TrackSectionEquals} from "../models/TrackDetails";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import {TrackSelection} from "../models/PreviewPlan";
 
 export const PlaybackPlanListItem: React.FC<{
     trackName: string,
+    listIndex: number
     allSections: TrackSection[],
     selectedSections: TrackSection[],
-    onButtonUpClick: (selectedIndex: number) => TrackSelection[],
-    onButtonDownClick: (selectedIndex: number) => TrackSelection[],
+    onButtonUpClick: (selectedIndex: number) => void,
+    onButtonDownClick: (selectedIndex: number) => void,
 }> = ({
     trackName,
+    listIndex,
     allSections,
-    selectedSections
+    selectedSections,
+    onButtonUpClick,
+    onButtonDownClick
 }) => {
     const getSectionInterval = (trackSection: TrackSection) => {
         return `[${trackSection.start.toFixed(2)}-${trackSection.end.toFixed(2)}]`
@@ -31,11 +34,11 @@ export const PlaybackPlanListItem: React.FC<{
     return (
         <ListItem>
             <Grid item xs='auto'>
-                <Button variant="contained" size='small'>
+                <Button variant="contained" size='small' onClick={() => onButtonUpClick(listIndex)}>
                     <KeyboardArrowUpIcon />
                 </Button>
                 <Box margin='0.4rem'/>
-                <Button variant="contained" size='small'>
+                <Button variant="contained" size='small' onClick={() => onButtonDownClick(listIndex)}>
                     <KeyboardArrowDownIcon />
                 </Button>
             </Grid>

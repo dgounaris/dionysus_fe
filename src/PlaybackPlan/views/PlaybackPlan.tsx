@@ -34,6 +34,7 @@ const PlaybackPlan = () => {
     const [playbackDevices, setPlaybackDevices] = useState<AvailableDevice[]>([]);
     const [selectedPlaybackDevice, setSelectedPlaybackDevice] = useState<string>('');
     const [refreshPreview, setRefreshPreview] = useState({});
+    const [refreshPreviewView, setRefreshPreviewView] = useState({});
 
     const createPreviewPlan = async () => {
         const playlistTracksData = await backendClient.get<Playlist>(
@@ -62,8 +63,7 @@ const PlaybackPlan = () => {
             }
         })
     }, [
-        refreshPreview,
-        previewPlan
+        refreshPreview
     ])
 
     useEffect(() => {
@@ -178,7 +178,11 @@ const PlaybackPlan = () => {
                     The following tracks will be played in this order:
                 </Typography>
             </Grid>
-            <PlaybackPlanList playbackSelections={previewPlan?.selections ?? []} playbackTracks={previewPlan?.tracks ?? []} isLoading={loadingPreview} />
+            <PlaybackPlanList
+                playbackSelections={previewPlan?.selections ?? []}
+                playbackTracks={previewPlan?.tracks ?? []}
+                isLoading={loadingPreview}
+                onListUpdateCallback={() => setRefreshPreviewView({})} />
             <Box position='sticky' bottom={0} sx={{
                 background: `linear-gradient(to bottom, #21182566, ${customTheme.palette.background.default})`,
                 paddingTop: '2rem',

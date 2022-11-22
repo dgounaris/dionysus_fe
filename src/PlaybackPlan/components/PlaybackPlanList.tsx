@@ -1,5 +1,5 @@
 import React from "react";
-import {TrackDetails, TrackSection} from "../models/TrackDetails";
+import {TrackDetails} from "../models/TrackDetails";
 import {PlaybackPlanListItem} from "./PlaybackPlanListItem";
 import {Grid, List} from "@mui/material";
 import {TrackSelection} from "../models/PreviewPlan";
@@ -7,18 +7,19 @@ import {LoadingBox} from "../../common/components/LoadingBox";
 
 export enum Operation {
     MOVE_UP,
-    MOVE_DOWN,
-    SHUFFLE_ALL
+    MOVE_DOWN
 }
 
 export const PlaybackPlanList: React.FC<{
     playbackSelections: TrackSelection[],
     playbackTracks: TrackDetails[],
-    isLoading: boolean
+    isLoading: boolean,
+    onListUpdateCallback: () => void
 }> = ({
     playbackSelections,
     playbackTracks,
-    isLoading
+    isLoading,
+    onListUpdateCallback
 }) => {
     const onReorderButton = (operation: Operation, playbackSelections: TrackSelection[]) => (selectedIndex: number) => {
         if (operation === Operation.MOVE_UP && selectedIndex >= 1) {
@@ -31,10 +32,7 @@ export const PlaybackPlanList: React.FC<{
             playbackSelections[selectedIndex] = playbackSelections[selectedIndex+1]
             playbackSelections[selectedIndex+1] = temp
         }
-        else if (operation === Operation.SHUFFLE_ALL) {
-            // todo
-        }
-        return playbackSelections
+        onListUpdateCallback()
     }
 
     if (isLoading) {
@@ -47,9 +45,10 @@ export const PlaybackPlanList: React.FC<{
     return (
         <Grid item xs={12}>
             <List>
-                {playbackSelections.map(value =>
+                {playbackSelections.map((value, index) =>
                     <PlaybackPlanListItem
                         trackName={value.name}
+                        listIndex={index}
                         allSections={playbackTracks.find(it => it.id === value.id).sections}
                         selectedSections={value.sections}
                         onButtonUpClick = {onReorderButton(Operation.MOVE_UP, playbackSelections)}
