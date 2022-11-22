@@ -3,11 +3,14 @@ import React from "react";
 import {TrackSection, TrackSectionEquals} from "../models/TrackDetails";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import {TrackSelection} from "../models/PreviewPlan";
 
 export const PlaybackPlanListItem: React.FC<{
     trackName: string,
     allSections: TrackSection[],
-    selectedSections: TrackSection[]
+    selectedSections: TrackSection[],
+    onButtonUpClick: (selectedIndex: number) => TrackSelection[],
+    onButtonDownClick: (selectedIndex: number) => TrackSelection[],
 }> = ({
     trackName,
     allSections,

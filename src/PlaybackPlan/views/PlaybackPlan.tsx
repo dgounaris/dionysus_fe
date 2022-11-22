@@ -62,7 +62,8 @@ const PlaybackPlan = () => {
             }
         })
     }, [
-        refreshPreview
+        refreshPreview,
+        previewPlan
     ])
 
     useEffect(() => {

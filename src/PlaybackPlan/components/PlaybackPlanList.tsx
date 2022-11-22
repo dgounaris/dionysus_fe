@@ -7,7 +7,8 @@ import {LoadingBox} from "../../common/components/LoadingBox";
 
 export enum Operation {
     MOVE_UP,
-    MOVE_DOWN
+    MOVE_DOWN,
+    SHUFFLE_ALL
 }
 
 export const PlaybackPlanList: React.FC<{
@@ -19,7 +20,7 @@ export const PlaybackPlanList: React.FC<{
     playbackTracks,
     isLoading
 }) => {
-    const onReorderButton = (playbackSelections: TrackSelection[], selectedIndex: number, operation: Operation) => {
+    const onReorderButton = (operation: Operation, playbackSelections: TrackSelection[]) => (selectedIndex: number) => {
         if (operation === Operation.MOVE_UP && selectedIndex >= 1) {
             const temp = playbackSelections[selectedIndex]
             playbackSelections[selectedIndex] = playbackSelections[selectedIndex-1]
@@ -30,7 +31,9 @@ export const PlaybackPlanList: React.FC<{
             playbackSelections[selectedIndex] = playbackSelections[selectedIndex+1]
             playbackSelections[selectedIndex+1] = temp
         }
-        // todo shuffle
+        else if (operation === Operation.SHUFFLE_ALL) {
+            // todo
+        }
         return playbackSelections
     }
 
@@ -49,6 +52,8 @@ export const PlaybackPlanList: React.FC<{
                         trackName={value.name}
                         allSections={playbackTracks.find(it => it.id === value.id).sections}
                         selectedSections={value.sections}
+                        onButtonUpClick = {onReorderButton(Operation.MOVE_UP, playbackSelections)}
+                        onButtonDownClick = {onReorderButton(Operation.MOVE_DOWN, playbackSelections)}
                     />
                 )}
             </List>
