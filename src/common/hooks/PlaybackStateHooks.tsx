@@ -5,7 +5,7 @@ import {useAuth} from "../../Auth/hooks/AuthHooks";
 
 type PlaybackStateContextType = {
     playbackState: PlaybackState,
-    refreshPlaybackState: () => void
+    setPlaybackState: (playbackState: PlaybackState) => void
 }
 const PlaybackStateContext = createContext<PlaybackStateContextType | null>(null);
 
@@ -21,17 +21,13 @@ export const PlaybackStateProvider = ({children}) => {
     }
 
     useEffect(() => {
-        const playbackStatusRefreshInterval = setInterval(() => {
-            if (auth.userLoggedIn) {
-                refreshPlaybackState()
-            }
-        }, 2000)
-
-        return () => { clearInterval(playbackStatusRefreshInterval) }
+        if (auth.userLoggedIn) {
+            refreshPlaybackState()
+        }
     }, [auth.userLoggedIn, auth.userName, playbackState])
 
     const value = useMemo(() => ({
-        playbackState, refreshPlaybackState
+        playbackState, setPlaybackState
     }), [playbackState])
 
     return <PlaybackStateContext.Provider value={value}>{children}</PlaybackStateContext.Provider>;

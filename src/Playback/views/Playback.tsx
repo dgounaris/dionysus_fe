@@ -11,38 +11,33 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import {usePlaybackState} from "../../common/hooks/PlaybackStateHooks";
 
 const Playback = () => {
-    const playbackState = usePlaybackState()
+    const { playbackState, setPlaybackState } = usePlaybackState()
 
     const pause = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/pause').then(data => {
-            playbackState.refreshPlaybackState()
+             setPlaybackState(data.playbackState)
         })
     }
     const resume = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/resume').then(data => {
-            playbackState.refreshPlaybackState()
+            setPlaybackState(data.playbackState)
         })
     }
     const next = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/next').then(data => {
-            playbackState.refreshPlaybackState()
+            setPlaybackState(data.playbackState)
         })
     }
     const stop = () => {
         backendClient.post<PlaybackUpdateResponse, null>('/v1/playback/stop').then(data => {
-            playbackState.refreshPlaybackState()
+            setPlaybackState(data.playbackState)
         })
     }
-
-    useEffect(() => {
-        playbackState.refreshPlaybackState()
-
-    }, [])
 
     let navigate = useNavigate()
 
     const pauseResumeButton = useMemo(() => {
-        if (playbackState.playbackState === PlaybackState.PLAYING) {
+        if (playbackState === PlaybackState.PLAYING) {
             return <Button variant="contained" onClick={pause}>
                 <PauseIcon />
             </Button>
@@ -59,7 +54,7 @@ const Playback = () => {
         }}>
             <Box sx={{ margin: '2rem' }}>
                 <Typography fontSize='1.5rem'>
-                    Current status: {playbackState.playbackState}
+                    Current status: {playbackState}
                 </Typography>
             </Box>
             <Box sx={{ margin: '1.5rem' }}>
